@@ -21,6 +21,7 @@ Using ADSB Scope is simple. All you need is a running instance of an ADS-B decod
 
 1. **Download:** Save the ```adsb-scope.html``` file to your computer.
 2. **Edit Configuration:** Open the ```adsb-scope.html``` file in a text editor and find the ```Configuration``` section within the ```<script>``` starting at `line 307`.
+3. 
    ```javascript
    // --- Configuration ---
    const VERSION = "0.1.7-gamma.b";
@@ -28,10 +29,10 @@ Using ADSB Scope is simple. All you need is a running instance of an ADS-B decod
    const HOME_LAT = 00.00000;                // <-- EDIT THIS
    const HOME_LON = -00.00000;                // <-- EDIT THIS
    ```
-3. **Set Data Source:** Change the `TAR1090_URL` to the URL of your `aircraft.json` file.
+4. **Set Data Source:** Change the `TAR1090_URL` to the URL of your `aircraft.json` file.
    * If ```adsb-scope.html``` is hosted on the same server as ```tar1090```, you can use a relative path like ```/tar1090/data/aircraft.json```.
    * If you are accessing a ```tar1090``` instance on your local network, use its full URL (e.g., ```http://192.168.1.100/tar1090/data/aircraft.json```).
-> [!IMPORTANT]
+> [!CAUTION]
 > If the data source is on a different domain, you may encounter CORS (Cross-Origin Resource Sharing) errors and only the UI will load. The server hosting ```aircraft.json``` must be configured to allow requests from the domain where you are viewing ```adsb-scope.html``` to load the data from the json file.
 
 4. **Set Home Location:** Change `HOME_LAT` and `HOME_LON` to your latitude and longitude. This sets the center of the radar scope.
@@ -49,11 +50,11 @@ The interface is designed to be intuitive and informative.
 
 | Key               | Action                               |
 | ----------------- | ------------------------------------ |
-| H               | Show/Hide the Help modal             |
-| Space           | Pause/Resume the radar sweep         |
-| \`+ / \`-\`         | Zoom the radar range in or out       |
-| \`M\`               | Cycle through filters (All/Mil/Civ)  |
-| \`Click\` on Target | View detailed aircraft data          |
+| ` H `              | Show/Hide the Help modal             |
+| ` Space `          | Pause/Resume the radar sweep         |
+| ` + ` / `- `         | Zoom the radar range in or out       |
+| ` M `               | Cycle through filters (All/Mil/Civ)  |
+| ` Right Click ` on Target | View detailed aircraft data          |
 
 ## How It Works
 
@@ -76,10 +77,11 @@ You can easily add your own themes.
 
 ## Known Issues
 
-* Aircraft are not highlighed on the scope when clicking on them in the left side panel.
-* Aircraft tracks become distorted when resizing the window
-* Aircraft tracks become distorted when changing the range
-* Aircraft tracks become distorted when resizing the side panels
+- [x] ~ ~ Scope is distorted when adjusting side panels ~ ~
+- [ ] Aircraft are not highlighed on the scope when clicking on them in the left side panel
+- [ ] Aircraft tracks become distorted when resizing the window
+- [ ] Aircraft tracks become distorted when changing the range
+- [ ] Aircraft tracks become distorted when resizing the side panels
 
 ## Future Enhancements
 
