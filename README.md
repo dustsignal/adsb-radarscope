@@ -4,7 +4,7 @@ ADSB Scope is a self-contained, browser-based ADS-B virtual radar display. It's 
 
 ## Key Features
 
-* **Almost Zero Installation:** Runs entirely in your web browser from a single HTML file. Set a few configuration variables and simply drop the file in your ```tar1090\``` or ```dump1090-fa\``` folder.
+* **Almost Zero Installation:** Runs entirely in your web browser from a single HTML file. Set a few configuration variables and simply drop the file in your ```tar1090``` or ```dump1090-fa``` folder.
 * **Highly Customizable:**
   * 13 UI themes (light and dark modes).
   * 50 radar scope color themes.
