@@ -77,7 +77,7 @@ You can easily add your own themes.
 
 ## Known Issues
 
-- [x] ~ ~ Scope is distorted when adjusting side panels ~ ~
+- [x] ~~Scope is distorted when adjusting side panels~~
 - [ ] Aircraft are not highlighed on the scope when clicking on them in the left side panel
 - [ ] Aircraft tracks become distorted when resizing the window
 - [ ] Aircraft tracks become distorted when changing the range
