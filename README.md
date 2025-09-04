@@ -88,10 +88,11 @@ You can easily add your own themes.
 
 ## Future Enhancements
 
-* Set minimum width for side panels
-* Add heading and sqawk code to aircraft info in the scope
-* Add airport markers and information to the scope view
-* Add weather radar to the scope view
+- [ ] Change the heading indicator line to an arrow
+- [ ] Set minimum width for side panels
+- [ ] Add heading and sqawk code to aircraft info in the scope
+- [ ] Add airport markers and information to the scope view
+- [ ] Add weather radar to the scope view
 
 ## License
 
