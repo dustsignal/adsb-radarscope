@@ -1,10 +1,10 @@
 # ADSB Scope
 
-ADSB Scope is a self-contained, browser-based ADS-B virtual radar display. It's a single HTML file that fetches aircraft data from a ```tar1090``` or \`dump1090-fa\` instance and renders it on a classic, round radar scope. It requires no server-side backend, libraries, or complex setup—just a web browser and a source for aircraft data.
+ADSB Scope is a self-contained, browser-based ADS-B virtual radar display. It's a single HTML file that fetches aircraft data from a ```tar1090``` or ```dump1090-fa``` instance and renders it on a classic, round radar scope. It requires no server-side backend, libraries, or complex setup—just a web browser and a source for aircraft data.
 
 ## Key Features
 
-* **Almost Zero Installation:** Runs entirely in your web browser from a single HTML file. Set a few configuration variables and simply drop the file in your \'tar1090\' or \'dump1090-fa\' folder.
+* **Almost Zero Installation:** Runs entirely in your web browser from a single HTML file. Set a few configuration variables and simply drop the file in your ```tar1090\``` or ```dump1090-fa\``` folder.
 * **Highly Customizable:**
   * 13 UI themes (light and dark modes).
   * 50 radar scope color themes.
@@ -15,32 +15,32 @@ ADSB Scope is a self-contained, browser-based ADS-B virtual radar display. It's 
 
 ## Getting Started
 
-Using ADSB Scope is simple. All you need is a running instance of an ADS-B decoder that provides an \`aircraft.json\` file, such as \`tar1090\` or '\dump1090-fa\'.
+Using ADSB Scope is simple. All you need is a running instance of an ADS-B decoder that provides an ```aircraft.json``` file, such as ```tar1090``` or ```dump1090-fa```.
 
 ### Setup
 
-1. **Download:** Save the \`adsb-scope.html\` file to your computer.
-2. **Edit Configuration:** Open the \`adsb-scope.html\` file in a text editor and find the '''Configuration''' section within the \`<script>\` tag at the bottom of the file.
-   \`\`\`javascript
+1. **Download:** Save the ```adsb-scope.html``` file to your computer.
+2. **Edit Configuration:** Open the ```adsb-scope.html``` file in a text editor and find the ```Configuration``` section within the ```<script>``` tag at the bottom of the file.
+   ```javascript
    // --- Configuration ---
    const VERSION = "0.1.7-gamma.b";
    const TAR1090_URL = "data/aircraft.json"; // <-- EDIT THIS
    const HOME_LAT = 00.00000;                // <-- EDIT THIS
    const HOME_LON = -00.00000;                // <-- EDIT THIS
-   \`\`\`
+   ```
 3. **Set Data Source:** Change the \`TAR1090_URL\` to the URL of your \`aircraft.json\` file.
-   * If \`adsb-scope.html\` is hosted on the same server as \`tar1090\`, you can use a relative path like \`/tar1090/data/aircraft.json\`.
-   * If you are accessing a \`tar1090\` instance on your local network, use its full URL (e.g., \`http://192.168.1.100/tar1090/data/aircraft.json\`).
-   * **Note:** If the data source is on a different domain, you may encounter CORS (Cross-Origin Resource Sharing) errors. The server hosting \`aircraft.json\` must be configured to allow requests from the domain where you are viewing \`adsb-scope.html\`.
-4. **Set Home Location:** Change \`HOME_LAT\` and \`HOME_LON\` to your latitude and longitude. This sets the center of the radar scope.
-5. **Launch:** Open the modified \`adsb-scope.html\` file in any modern web browser.
+   * If ```adsb-scope.html``` is hosted on the same server as ```tar1090```, you can use a relative path like ```/tar1090/data/aircraft.json```.
+   * If you are accessing a ```tar1090``` instance on your local network, use its full URL (e.g., ```http://192.168.1.100/tar1090/data/aircraft.json```).
+   * **Note:** If the data source is on a different domain, you may encounter CORS (Cross-Origin Resource Sharing) errors. The server hosting ```aircraft.json``` must be configured to allow requests from the domain where you are viewing ```adsb-scope.html```.
+4. **Set Home Location:** Change `HOME_LAT` and `HOME_LON` to your latitude and longitude. This sets the center of the radar scope.
+5. **Launch:** Open the modified ```adsb-scope.html``` file in any modern web browser.
 
 ## Usage
 
 The interface is designed to be intuitive and informative.
 
-* **Side Panels:** The left panel shows a list of all tracked aircraft, sorted by distance. The right panel displays live metrics and a list of keyboard shortcuts. Both panels can be resized by dragging their borders or hidden completely with the "Hide Panels" button.
-* **Theme Selection:** Use the "UI Theme" and "Scope Theme" buttons in the top-right to customize the look and feel.
+* **Side Panels:** The left panel shows a list of all tracked aircraft, sorted by distance. The right panel displays live metrics and a list of keyboard shortcuts. Both panels can be resized by dragging their borders or hidden completely with the ```Hide Panels``` button.
+* **Theme Selection:** Use the ```UI Theme``` and ```Scope Theme``` buttons in the top-right to customize the look and feel.
 * **Aircraft Details:** Click on an aircraft on the scope to view its raw data in a popup.
 
 ### Keyboard Shortcuts
