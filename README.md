@@ -32,7 +32,7 @@ Using ADSB Scope is simple. All you need is a running instance of an ADS-B decod
    * If ```adsb-scope.html``` is hosted on the same server as ```tar1090```, you can use a relative path like ```/tar1090/data/aircraft.json```.
    * If you are accessing a ```tar1090``` instance on your local network, use its full URL (e.g., ```http://192.168.1.100/tar1090/data/aircraft.json```).
 > [!IMPORTANT]
-> >If the data source is on a different domain, you may encounter CORS (Cross-Origin Resource Sharing) errors. The server hosting ```aircraft.json``` must be configured to allow requests from the domain where you are viewing ```adsb-scope.html```.
+> If the data source is on a different domain, you may encounter CORS (Cross-Origin Resource Sharing) errors. The server hosting ```aircraft.json``` must be configured to allow requests from the domain where you are viewing ```adsb-scope.html```.
 
 4. **Set Home Location:** Change `HOME_LAT` and `HOME_LON` to your latitude and longitude. This sets the center of the radar scope.
 5. **Launch:** Open the modified ```adsb-scope.html``` file in any modern web browser.
