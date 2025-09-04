@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<!--
+  ADSB Radarscope
+  Author: dustsignal
+  Version: 0.1.7-gamma.b
+  GitHub: https://github.com/dustsignal/adsb-scope
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-->
+<html lang="en" data-ui-theme="default-dark"> <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADSB Radarscope | v0.1.7-gamma.b | by dustsignal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            // NOTE: darkMode is handled by the custom theme switcher, not Tailwind's class strategy.
+            theme: {
+                extend: {
+                    colors: {
+                        // Scope Themes (for the canvas)
+                        'classic-green':  { background: '#001200', grid: '#003300', sweep: '#00FF00', aircraft: '#00FF00', selected: '#CCFFCC', emergency: '#FF6666', ground: '#00B300', text: '#C8FFC8' },
+                        'arctic-blue':    { background: '#050A14', grid: '#14294F', sweep: '#63C7FF', aircraft: '#00FFFF', selected: '#FFFF00', emergency: '#FF3333', ground: '#63C7FF', text: '#DCF0FF' },
+                        'desert-amber':   { background: '#140A00', grid: '#4F3314', sweep: '#FFB300', aircraft: '#FFC763', selected: '#FFFFDB', emergency: '#FF3D3D', ground: '#FFB300', text: '#FFDCB4' },
+                        'night-vision':   { background: '#000000', grid: '#003D00', sweep: '#00FF00', aircraft: '#00FF00', selected: '#CCFFCC', emergency: '#FF0000', ground: '#00B300', text: '#00FF00' },
+                        'stealth-gray':   { background: '#14141A', grid: '#3D3D45', sweep: '#B3B3C7', aircraft: '#DBDBF0', selected: '#FFFF66', emergency: '#FF4F4F', ground: '#B3B3C7', text: '#DCDCF0' },
+                        'crimson-alert':  { background: '#1A0000', grid: '#4F0000', sweep: '#FF3333', aircraft: '#FF9999', selected: '#FFFFCC', emergency: '#FFFF00', ground: '#FF3333', text: '#FFC8C8' },
+                        'cyberpunk':      { background: '#0A0014', grid: '#4F144F', sweep: '#FF00FF', aircraft: '#00FFFF', selected: '#FFFF00', emergency: '#FF1494', ground: '#FF00FF', text: '#DCDCFE' },
+                        'solar-flare':    { background: '#1a0d00', grid: '#4d2a00', sweep: '#ffdd00', aircraft: '#ffaa00', selected: '#ffffff', emergency: '#ff4400', ground: '#ffdd00', text: '#ffecb3' },
+                        'deep-ocean':     { background: '#00051a', grid: '#001a4d', sweep: '#00aaff', aircraft: '#66ccff', selected: '#f0f8ff', emergency: '#ff3333', ground: '#00aaff', text: '#cceeff' },
+                        'forest-camo':    { background: '#0a1a0a', grid: '#1f4d1f', sweep: '#66ff66', aircraft: '#aaffaa', selected: '#ffffcc', emergency: '#ff6600', ground: '#66ff66', text: '#d9ffd9' },
+                        'volcanic-ash':   { background: '#101010', grid: '#333333', sweep: '#ff4d4d', aircraft: '#ff8080', selected: '#ffff00', emergency: '#ff0000', ground: '#ff4d4d', text: '#cccccc' },
+                        'nebula-purple':  { background: '#10001a', grid: '#3d004d', sweep: '#ff00ff', aircraft: '#ff99ff', selected: '#ccffff', emergency: '#ff3333', ground: '#ff00ff', text: '#f2ccff' },
+                        'ghost-white':    { background: '#1a1a1a', grid: '#4d4d4d', sweep: '#ffffff', aircraft: '#cccccc', selected: '#00ff00', emergency: '#ff0000', ground: '#ffffff', text: '#e6e6e6' },
+                        'golden-age':     { background: '#1a1400', grid: '#4d4200', sweep: '#ffd700', aircraft: '#ffec80', selected: '#ffffff', emergency: '#ff4500', ground: '#ffd700', text: '#fff5cc' },
+                        'retro-vga':      { background: '#0000a0', grid: '#0000c0', sweep: '#ffffff', aircraft: '#00ff00', selected: '#ffff00', emergency: '#ff0000', ground: '#00ff00', text: '#c0c0c0' },
+                        'toxic-sludge':   { background: '#1a1a00', grid: '#4d4d00', sweep: '#adff2f', aircraft: '#d2ff80', selected: '#ffffff', emergency: '#ff0000', ground: '#adff2f', text: '#eaffcc' },
+                        'strawberry-cream':{ background: '#2a0d0d', grid: '#6a2a2a', sweep: '#ffb6c1', aircraft: '#ffdde1', selected: '#ffffff', emergency: '#ff0000', ground: '#ffb6c1', text: '#ffe6e8' },
+                        'blueprint':      { background: '#00002a', grid: '#00006a', sweep: '#ffffff', aircraft: '#87cefa', selected: '#ffff00', emergency: '#ff4500', ground: '#ffffff', text: '#d0e0ff' },
+                        'hacker-matrix':  { background: '#000000', grid: '#002200', sweep: '#00ff00', aircraft: '#66ff66', selected: '#ffffff', emergency: '#ff0000', ground: '#00cc00', text: '#00ff00' },
+                        'autumn-leaves':  { background: '#2a0a00', grid: '#6a2a00', sweep: '#ff8c00', aircraft: '#ffd480', selected: '#ffff00', emergency: '#dc143c', ground: '#ff8c00', text: '#ffeacc' },
+                        'coral-reef':     { background: '#001a1a', grid: '#004d4d', sweep: '#7fffd4', aircraft: '#ff7f50', selected: '#f0ffff', emergency: '#ff1493', ground: '#7fffd4', text: '#ccfff2' },
+                        'lunar-rock':     { background: '#222222', grid: '#444444', sweep: '#c0c0c0', aircraft: '#dddddd', selected: '#00ff00', emergency: '#ff3333', ground: '#c0c0c0', text: '#e0e0e0' },
+                        'sandstone':      { background: '#2a1d0d', grid: '#6a4a2a', sweep: '#f4a460', aircraft: '#ffdead', selected: '#ffffff', emergency: '#ff4500', ground: '#f4a460', text: '#ffefd9' },
+                        'royal-velvet':   { background: '#1a001a', grid: '#4d004d', sweep: '#8a2be2', aircraft: '#da70d6', selected: '#ffd700', emergency: '#ff0000', ground: '#8a2be2', text: '#efccff' },
+                        'mint-chocolate': { background: '#100a0a', grid: '#3d2a2a', sweep: '#98ff98', aircraft: '#d9ffd9', selected: '#ffffff', emergency: '#ff4500', ground: '#98ff98', text: '#e6ffe6' },
+                        'infrared-heat':  { background: '#000000', grid: '#220000', sweep: '#ff0000', aircraft: '#ffff00', selected: '#ffffff', emergency: '#ff0000', ground: '#ff9900', text: '#ffaaaa' },
+                        'plasma-burn':    { background: '#11001a', grid: '#3d004d', sweep: '#ff00ff', aircraft: '#ff66ff', selected: '#00ffff', emergency: '#ffff00', ground: '#ff00ff', text: '#f2ccff' },
+                        'cold-steel':     { background: '#0d131a', grid: '#2a3a4d', sweep: '#add8e6', aircraft: '#e0ffff', selected: '#ffffff', emergency: '#ff3333', ground: '#add8e6', text: '#d9ecf2' },
+                        'digital-rain':   { background: '#000510', grid: '#001530', sweep: '#00ffff', aircraft: '#00aaff', selected: '#00ff00', emergency: '#ff0000', ground: '#00dddd', text: '#aaddff' },
+                        'copper-rust':    { background: '#2a0a00', grid: '#6a2a00', sweep: '#b87333', aircraft: '#daa520', selected: '#00ffff', emergency: '#ff0000', ground: '#008080', text: '#ffeacc' },
+                        'aurora-borealis':{ background: '#00001a', grid: '#002030', sweep: '#00ff7f', aircraft: '#ff69b4', selected: '#ffffff', emergency: '#ff0000', ground: '#32cd32', text: '#ccffee' },
+                        'vintage-sepia':  { background: '#2a1d0d', grid: '#504030', sweep: '#d2b48c', aircraft: '#f5deb3', selected: '#ffffff', emergency: '#a52a2a', ground: '#d2b48c', text: '#fff0d9' },
+                        'acid-wash':      { background: '#1a001a', grid: '#4d004d', sweep: '#ff00ff', aircraft: '#00ffff', selected: '#ffff00', emergency: '#ff1493', ground: '#ff00ff', text: '#efccff' },
+                        'moonlit':        { background: '#0d0d1a', grid: '#2a2a4d', sweep: '#c0c0c0', aircraft: '#f0f8ff', selected: '#00ff00', emergency: '#ff4500', ground: '#c0c0c0', text: '#e6e6ff' },
+                        'lava-flow':      { background: '#1a0000', grid: '#4d0000', sweep: '#ff4500', aircraft: '#ff8c00', selected: '#ffff00', emergency: '#ff0000', ground: '#ff4500', text: '#ffcccc' },
+                        'emerald-city':   { background: '#001a0a', grid: '#004d1f', sweep: '#00ff00', aircraft: '#ffd700', selected: '#ffffff', emergency: '#ff0000', ground: '#50c878', text: '#ccffdd' },
+                        'grape-soda':     { background: '#1a0d1a', grid: '#4d2a4d', sweep: '#da70d6', aircraft: '#dda0dd', selected: '#ffffff', emergency: '#ff00ff', ground: '#da70d6', text: '#f2e6f2' },
+                        'starfield':      { background: '#03051e', grid: '#1c2152', sweep: '#dadaff', aircraft: '#ffffaa', selected: '#aaffff', emergency: '#ff5555', ground: '#dadaff', text: '#dadaff' },
+                        'jungle':         { background: '#081405', grid: '#2a4f14', sweep: '#a3ff00', aircraft: '#d4ff63', selected: '#ffffff', emergency: '#ff3d3d', ground: '#a3ff00', text: '#c8ffb4' },
+                        'biohazard':      { background: '#141100', grid: '#4f4414', sweep: '#fff700', aircraft: '#b8ff63', selected: '#ffffff', emergency: '#ff0000', ground: '#fff700', text: '#ffffb4' },
+                        'daylight':       { background: '#dce8f2', grid: '#aabccc', sweep: '#0077ff', aircraft: '#ff3333', selected: '#0000ff', emergency: '#ff0000', ground: '#0099ff', text: '#224466' },
+                        'cad':            { background: '#ffffff', grid: '#cccccc', sweep: '#888888', aircraft: '#0000ff', selected: '#ff00ff', emergency: '#ff0000', ground: '#0000ff', text: '#000000' },
+                        'blueprint-light':{ background: '#e0e8f6', grid: '#a8bedc', sweep: '#ffffff', aircraft: '#0033cc', selected: '#ff3300', emergency: '#cc0000', ground: '#0033cc', text: '#002266' },
+                        'paper-map':      { background: '#f5f3e8', grid: '#dcd9c8', sweep: '#b1a18c', aircraft: '#d9534f', selected: '#0275d8', emergency: '#ff0000', ground: '#b1a18c', text: '#6a5f4b' },
+                        'arctic-light':   { background: '#f0f8ff', grid: '#c0d8ef', sweep: '#63c7ff', aircraft: '#0088cc', selected: '#0000ff', emergency: '#ff3333', ground: '#63c7ff', text: '#052a4f' },
+                        'sandstorm':      { background: '#fdf6e3', grid: '#eee8d5', sweep: '#dc322f', aircraft: '#268bd2', selected: '#d33682', emergency: '#ff0000', ground: '#dc322f', text: '#657b83' },
+                        'medical':        { background: '#ffffff', grid: '#d0d0d0', sweep: '#00a0a0', aircraft: '#d90000', selected: '#0000d9', emergency: '#ff0000', ground: '#00a0a0', text: '#444444' },
+                        'clean-room':     { background: '#f8f8f8', grid: '#d8d8d8', sweep: '#a0a0a0', aircraft: '#000000', selected: '#0000ff', emergency: '#ff0000', ground: '#888888', text: '#333333' },
+                        'graph-paper':    { background: '#ffffff', grid: '#add8e6', sweep: '#4682b4', aircraft: '#ff4500', selected: '#32cd32', emergency: '#ff0000', ground: '#4682b4', text: '#00008b' },
+                        'hi-vis':         { background: '#ffffff', grid: '#c0c0c0', sweep: '#ffaa00', aircraft: '#000000', selected: '#ff00ff', emergency: '#ff0000', ground: '#ffaa00', text: '#000000' },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html, body { margin: 0; overflow: hidden; height: 100vh; }
+        .table-cell { padding: 0.25rem 0.5rem; white-space: nowrap; }
+        .dropdown-menu { transition: opacity 0.2s ease, transform 0.2s ease; }
+        .resizer {
+            width: 5px;
+            cursor: col-resize;
+            background-color: var(--color-resizer-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .resizer:hover { background-color: #3b82f6; }
+        .resizer-indicator {
+            width: 1px;
+            height: 16px;
+            background-color: var(--color-resizer-indicator);
+            border-left: 1px solid var(--color-resizer-border);
+            border-right: 1px solid var(--color-resizer-border);
+        }
+
+        /* Animation for emergency alerts */
+        @keyframes slideInFadeOut {
+            0% { opacity: 0; transform: translateX(100%); }
+            15% { opacity: 1; transform: translateX(0); }
+            85% { opacity: 1; transform: translateX(0); }
+            100% { opacity: 0; transform: translateX(100%); }
+        }
+        .alert-animate { animation: slideInFadeOut 6s forwards; }
+        
+        /* --- UI Themes using CSS Variables --- */
+        :root {
+            --color-bg-primary: #fff; --color-bg-panel: #f3f4f6; --color-text-primary: #1f2937; --color-text-muted: #6b7280;
+            --color-border: #e5e7eb; --color-button-bg: #e5e7eb; --color-button-hover: #d1d5db; --color-kbd-bg: #e5e7eb;
+            --color-kbd-text: #1f2937; --color-kbd-border: #d1d5db; --color-resizer-bg: #e5e7eb; --color-resizer-indicator: #9ca3af;
+            --color-resizer-border: #fff; --color-table-header: #e5e7eb; --color-table-odd-row: #f9fafb; --color-selected-row: #93c5fd;
+        }
+        /* Light Themes */
+        :root[data-ui-theme="default-light"] {
+            --color-bg-primary: #ffffff; --color-bg-panel: #f3f4f6; --color-text-primary: #1f2937; --color-text-muted: #6b7280;
+            --color-border: #e5e7eb; --color-button-bg: #e5e7eb; --color-button-hover: #d1d5db; --color-kbd-bg: #e5e7eb;
+            --color-kbd-text: #1f2937; --color-kbd-border: #d1d5db; --color-resizer-bg: #e5e7eb; --color-resizer-indicator: #9ca3af;
+            --color-resizer-border: #fff; --color-table-header: #e5e7eb; --color-table-odd-row: #f9fafb; --color-selected-row: #93c5fd;
+        }
+        :root[data-ui-theme="stone"] {
+            --color-bg-primary: #fafaf9; --color-bg-panel: #f5f5f4; --color-text-primary: #292524; --color-text-muted: #78716c;
+            --color-border: #e7e5e4; --color-button-bg: #e7e5e4; --color-button-hover: #d6d3d1; --color-kbd-bg: #e7e5e4;
+            --color-kbd-text: #292524; --color-kbd-border: #d6d3d1; --color-resizer-bg: #e7e5e4; --color-resizer-indicator: #a8a29e;
+            --color-resizer-border: #fafaf9; --color-table-header: #e7e5e4; --color-table-odd-row: #f5f5f4; --color-selected-row: #bbf7d0;
+        }
+        :root[data-ui-theme="mint"] {
+            --color-bg-primary: #f0fdf4; --color-bg-panel: #dcfce7; --color-text-primary: #166534; --color-text-muted: #15803d;
+            --color-border: #bbf7d0; --color-button-bg: #bbf7d0; --color-button-hover: #86efac; --color-kbd-bg: #bbf7d0;
+            --color-kbd-text: #166534; --color-kbd-border: #86efac; --color-resizer-bg: #bbf7d0; --color-resizer-indicator: #22c55e;
+            --color-resizer-border: #f0fdf4; --color-table-header: #dcfce7; --color-table-odd-row: #ecfdf5; --color-selected-row: #fda4af;
+        }
+        :root[data-ui-theme="sky"] {
+            --color-bg-primary: #f0f9ff; --color-bg-panel: #e0f2fe; --color-text-primary: #075985; --color-text-muted: #0369a1;
+            --color-border: #bae6fd; --color-button-bg: #bae6fd; --color-button-hover: #7dd3fc; --color-kbd-bg: #bae6fd;
+            --color-kbd-text: #075985; --color-kbd-border: #7dd3fc; --color-resizer-bg: #bae6fd; --color-resizer-indicator: #0284c7;
+            --color-resizer-border: #f0f9ff; --color-table-header: #e0f2fe; --color-table-odd-row: #f0f9ff; --color-selected-row: #fcd34d;
+        }
+        :root[data-ui-theme="lavender"] {
+            --color-bg-primary: #faf5ff; --color-bg-panel: #f3e8ff; --color-text-primary: #581c87; --color-text-muted: #7e22ce;
+            --color-border: #e9d5ff; --color-button-bg: #e9d5ff; --color-button-hover: #d8b4fe; --color-kbd-bg: #e9d5ff;
+            --color-kbd-text: #581c87; --color-kbd-border: #d8b4fe; --color-resizer-bg: #e9d5ff; --color-resizer-indicator: #9333ea;
+            --color-resizer-border: #faf5ff; --color-table-header: #f3e8ff; --color-table-odd-row: #faf5ff; --color-selected-row: #a5b4fc;
+        }
+        :root[data-ui-theme="paper"] {
+            --color-bg-primary: #fefcf7; --color-bg-panel: #fdf8ed; --color-text-primary: #484234; --color-text-muted: #7e735f;
+            --color-border: #e9e2d4; --color-button-bg: #e9e2d4; --color-button-hover: #d8d0bf; --color-kbd-bg: #e9e2d4;
+            --color-kbd-text: #484234; --color-kbd-border: #d8d0bf; --color-resizer-bg: #e9e2d4; --color-resizer-indicator: #938976;
+            --color-resizer-border: #fefcf7; --color-table-header: #f3e8ff; --color-table-odd-row: #fdf8ed; --color-selected-row: #818cf8;
+        }
+        :root[data-ui-theme="azure"] {
+            --color-bg-primary: #f5faff; --color-bg-panel: #eef5ff; --color-text-primary: #2c5282; --color-text-muted: #3182ce;
+            --color-border: #bee3f8; --color-button-bg: #bee3f8; --color-button-hover: #90cdf4; --color-kbd-bg: #bee3f8;
+            --color-kbd-text: #2c5282; --color-kbd-border: #90cdf4; --color-resizer-bg: #bee3f8; --color-resizer-indicator: #4299e1;
+            --color-resizer-border: #f5faff; --color-table-header: #eef5ff; --color-table-odd-row: #f5faff; --color-selected-row: #f6ad55;
+        }
+
+        /* Dark Themes */
+        :root[data-ui-theme="default-dark"] {
+            --color-bg-primary: #1f2937; --color-bg-panel: #111827; --color-text-primary: #f9fafb; --color-text-muted: #9ca3af;
+            --color-border: #374151; --color-button-bg: #374151; --color-button-hover: #4b5563; --color-kbd-bg: #111827;
+            --color-kbd-text: #d1d5db; --color-kbd-border: #374151; --color-resizer-bg: #374151; --color-resizer-indicator: #6b7280;
+            --color-resizer-border: #4b5563; --color-table-header: #374151; --color-table-odd-row: #1f293780; --color-selected-row: #1e40af;
+        }
+        :root[data-ui-theme="slate"] {
+            --color-bg-primary: #1e293b; --color-bg-panel: #0f172a; --color-text-primary: #f1f5f9; --color-text-muted: #94a3b8;
+            --color-border: #334155; --color-button-bg: #334155; --color-button-hover: #475569; --color-kbd-bg: #0f172a;
+            --color-kbd-text: #cbd5e1; --color-kbd-border: #334155; --color-resizer-bg: #334155; --color-resizer-indicator: #64748b;
+            --color-resizer-border: #475569; --color-table-header: #334155; --color-table-odd-row: #1e293b80; --color-selected-row: #38bdf8;
+        }
+        :root[data-ui-theme="abyss"] {
+            --color-bg-primary: #0c0a09; --color-bg-panel: #000000; --color-text-primary: #fde68a; --color-text-muted: #a16207;
+            --color-border: #292524; --color-button-bg: #292524; --color-button-hover: #44403c; --color-kbd-bg: #000000;
+            --color-kbd-text: #fde68a; --color-kbd-border: #292524; --color-resizer-bg: #292524; --color-resizer-indicator: #57534e;
+            --color-resizer-border: #44403c; --color-table-header: #292524; --color-table-odd-row: #0c0a0980; --color-selected-row: #7c2d12;
+        }
+        :root[data-ui-theme="forest"] {
+            --color-bg-primary: #13221b; --color-bg-panel: #0b120f; --color-text-primary: #d1fae5; --color-text-muted: #6ee7b7;
+            --color-border: #065f46; --color-button-bg: #065f46; --color-button-hover: #047857; --color-kbd-bg: #0b120f;
+            --color-kbd-text: #d1fae5; --color-kbd-border: #065f46; --color-resizer-bg: #065f46; --color-resizer-indicator: #10b981;
+            --color-resizer-border: #047857; --color-table-header: #065f46; --color-table-odd-row: #13221b80; --color-selected-row: #34d399;
+        }
+        :root[data-ui-theme="crimson"] {
+            --color-bg-primary: #2b0b0b; --color-bg-panel: #1b0707; --color-text-primary: #fee2e2; --color-text-muted: #fca5a5;
+            --color-border: #991b1b; --color-button-bg: #991b1b; --color-button-hover: #b91c1c; --color-kbd-bg: #1b0707;
+            --color-kbd-text: #fee2e2; --color-kbd-border: #991b1b; --color-resizer-bg: #991b1b; --color-resizer-indicator: #ef4444;
+            --color-resizer-border: #b91c1c; --color-table-header: #991b1b; --color-table-odd-row: #2b0b0b80; --color-selected-row: #fbbf24;
+        }
+        :root[data-ui-theme="royal"] {
+            --color-bg-primary: #1e1b4b; --color-bg-panel: #17143a; --color-text-primary: #e0e7ff; --color-text-muted: #a5b4fc;
+            --color-border: #4338ca; --color-button-bg: #4338ca; --color-button-hover: #4f46e5; --color-kbd-bg: #17143a;
+            --color-kbd-text: #e0e7ff; --color-kbd-border: #4338ca; --color-resizer-bg: #4338ca; --color-resizer-indicator: #6366f1;
+            --color-resizer-border: #4f46e5; --color-table-header: #4338ca; --color-table-odd-row: #1e1b4b80; --color-selected-row: #f472b6;
+        }
+        :root[data-ui-theme="mocha"] {
+            --color-bg-primary: #2d1b0f; --color-bg-panel: #1e120a; --color-text-primary: #fde4d5; --color-text-muted: #f9ab77;
+            --color-border: #7c2d12; --color-button-bg: #7c2d12; --color-button-hover: #9a3412; --color-kbd-bg: #1e120a;
+            --color-kbd-text: #fde4d5; --color-kbd-border: #7c2d12; --color-resizer-bg: #7c2d12; --color-resizer-indicator: #ea580c;
+            --color-resizer-border: #9a3412; --color-table-header: #7c2d12; --color-table-odd-row: #2d1b0f80; --color-selected-row: #4ade80;
+        }
+        :root[data-ui-theme="rose-pine"] {
+            --color-bg-primary: #191724; --color-bg-panel: #1f1d2e; --color-text-primary: #e0def4; --color-text-muted: #908caa;
+            --color-border: #44415a; --color-button-bg: #26233a; --color-button-hover: #312f4c; --color-kbd-bg: #1f1d2e;
+            --color-kbd-text: #e0def4; --color-kbd-border: #44415a; --color-resizer-bg: #44415a; --color-resizer-indicator: #6e6a86;
+            --color-resizer-border: #312f4c; --color-table-header: #26233a; --color-table-odd-row: #19172480; --color-selected-row: #c4a7e7;
+        }
+    </style>
+</head>
+<body class="font-mono antialiased" style="background-color: var(--color-bg-primary); color: var(--color-text-primary);">
+
+    <div class="h-full flex flex-col">
+        <header class="flex-shrink-0 border-b px-2 py-1 flex items-center justify-between z-20" style="background-color: var(--color-bg-panel); border-color: var(--color-border);">
+            <div class="flex items-baseline gap-3">
+                <h1 class="text-lg font-bold">ADSB Scope</h1>
+                <span id="version-display" class="text-xs rounded-md px-2 py-0.5 bg-[var(--color-button-bg)]/60" style="color: var(--color-text-muted);"></span>
+            </div>
+            <div id="scope-status-bar" class="hidden md:flex justify-center items-center gap-x-4 text-xs" style="color: var(--color-text-muted);">
+            </div>
+            <div class="flex items-center gap-2">
+                 <button id="hide-ui-button" class="px-3 py-1 rounded-md text-sm" style="background-color: var(--color-button-bg); &:hover { background-color: var(--color-button-hover); }">Hide Panels</button>
+                <div class="relative">
+                    <button id="ui-theme-button" class="px-3 py-1 rounded-md text-sm" style="background-color: var(--color-button-bg); &:hover { background-color: var(--color-button-hover); }">UI Theme</button>
+                    <div id="ui-theme-menu" class="absolute right-0 mt-2 w-48 bg-[var(--color-bg-panel)] border rounded-md shadow-lg hidden origin-top-right dropdown-menu overflow-y-auto max-h-60" style="border-color: var(--color-border);">
+                        </div>
+                </div>
+                <div class="relative">
+                    <button id="scope-theme-button" class="px-3 py-1 rounded-md text-sm" style="background-color: var(--color-button-bg); &:hover { background-color: var(--color-button-hover); }">Scope Theme</button>
+                    <div id="scope-theme-menu" class="absolute right-0 mt-2 w-48 bg-[var(--color-bg-panel)] border rounded-md shadow-lg hidden origin-top-right dropdown-menu overflow-y-auto max-h-60" style="border-color: var(--color-border);">
+                        </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow flex overflow-hidden">
+            <div id="left-panel" class="w-[12%] flex flex-col overflow-hidden border-r flex-shrink-0" style="background-color: var(--color-bg-panel); border-color: var(--color-border);">
+                <h2 class="p-2 font-bold text-center border-b flex-shrink-0" style="border-color: var(--color-border);">Tracked Aircraft</h2>
+                <div class="overflow-y-auto text-xs">
+                    <table class="w-full">
+                        <thead class="sticky top-0" style="background-color: var(--color-table-header);">
+                            <tr>
+                                <th class="table-cell text-left">Flight</th>
+                                <th class="table-cell text-right">Alt (ft)</th>
+                                <th class="table-cell text-right">Speed (kt)</th>
+                                <th class="table-cell text-right">Dist (nm)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="aircraft-list-body">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="left-resizer" class="resizer flex-shrink-0"><div class="resizer-indicator"></div></div>
+
+            <div class="flex-grow flex flex-col">
+                <div id="canvas-container" class="flex-grow relative">
+                    <canvas id="radarCanvas" class="absolute top-0 left-0 w-full h-full"></canvas>
+                    <div id="aircraft-popup" class="absolute bg-black bg-opacity-70 text-white text-xs p-2 rounded-md hidden whitespace-pre-wrap"></div>
+                    <div id="alert-container" class="absolute top-2 right-2 space-y-2"></div>
+                </div>
+            </div>
+            
+            <div id="right-resizer" class="resizer flex-shrink-0"><div class="resizer-indicator"></div></div>
+
+            <div id="right-panel" class="w-[12%] flex flex-col overflow-hidden border-l flex-shrink-0" style="background-color: var(--color-bg-panel); border-color: var(--color-border);">
+                <h2 class="p-2 font-bold text-center border-b flex-shrink-0" style="border-color: var(--color-border);">Metrics</h2>
+                <div id="metrics-panel" class="p-2 space-y-2 text-xs overflow-y-auto">
+                </div>
+                <div class="flex-shrink-0 p-2 text-xs">
+                    <hr class="mb-2" style="border-color: var(--color-border);">
+                    <div class="font-bold text-center mb-2">Shortcuts</div>
+                    <div id="shortcut-bar" class="grid grid-cols-2 gap-x-4 gap-y-1" style="color: var(--color-text-muted);">
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <div id="pausedText" class="fixed inset-0 flex items-center justify-center z-50 hidden bg-black bg-opacity-50">
+        <h1 class="text-4xl font-bold tracking-widest animate-pulse text-white">PAUSED</h1>
+    </div>
+    <div id="help-modal" class="fixed inset-0 flex items-center justify-center z-50 hidden bg-black bg-opacity-50">
+        <div class="p-6 rounded-lg shadow-2xl w-full max-w-lg" style="background-color: var(--color-bg-panel);">
+            <h2 class="text-2xl font-bold mb-4">Help & Shortcuts</h2>
+            <p class="mb-4">This is a placeholder for help information. You can describe how to use the application here.</p>
+            <div id="help-shortcut-list" class="grid grid-cols-2 gap-4 text-sm">
+                </div>
+            <button id="close-help-button" class="mt-6 w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Close</button>
+        </div>
+    </div>
+
+    <script>
+    // --- Main Application Logic ---
+    function runApp() {
+
+        // --- Configuration ---
+        const VERSION = "0.1.7-gamma.b";
+        const TAR1090_URL = "data/aircraft.json"; 
+        const HOME_LAT = 00.00000;
+        const HOME_LON = -00.00000;
+
+        // --- Constants ---
+        const UI_THEMES = [
+            { name: "Default Light", key: "default-light", group: "Light" }, { name: "Stone", key: "stone", group: "Light" },
+            { name: "Mint", key: "mint", group: "Light" }, { name: "Sky", key: "sky", group: "Light" },
+            { name: "Lavender", key: "lavender", group: "Light" }, { name: "Paper", key: "paper", group: "Light" },
+            { name: "Azure", key: "azure", group: "Light" },
+            { name: "Default Dark", key: "default-dark", group: "Dark" }, { name: "Slate", key: "slate", group: "Dark" },
+            { name: "Abyss", key: "abyss", group: "Dark" }, { name: "Forest", key: "forest", group: "Dark" },
+            { name: "Crimson", key: "crimson", group: "Dark" }, { name: "Royal", key: "royal", group: "Dark" },
+            { name: "Mocha", key: "mocha", group: "Dark" }, { name: "Rose Pine", key: "rose-pine", group: "Dark" }
+        ];
+
+        const SCOPE_THEMES = [
+            { name: "Classic Green", key: "classic-green" }, { name: "Arctic Blue", key: "arctic-blue" },
+            { name: "Desert Amber", key: "desert-amber" }, { name: "Night Vision", key: "night-vision" },
+            { name: "Stealth Gray", key: "stealth-gray" }, { name: "Crimson Alert", key: "crimson-alert" },
+            { name: "Cyberpunk", key: "cyberpunk" }, { name: "Solar Flare", key: "solar-flare" }, 
+            { name: "Deep Ocean", key: "deep-ocean" }, { name: "Forest Camo", key: "forest-camo" }, 
+            { name: "Volcanic Ash", key: "volcanic-ash" }, { name: "Nebula Purple", key: "nebula-purple" }, 
+            { name: "Ghost White", key: "ghost-white" }, { name: "Golden Age", key: "golden-age" }, 
+            { name: "Retro VGA", key: "retro-vga" }, { name: "Toxic Sludge", key: "toxic-sludge" }, 
+            { name: "Strawberry Cream", key: "strawberry-cream" }, { name: "Blueprint", key: "blueprint" }, 
+            { name: "Hacker Matrix", key: "hacker-matrix" }, { name: "Autumn Leaves", key: "autumn-leaves" }, 
+            { name: "Coral Reef", key: "coral-reef" }, { name: "Lunar Rock", key: "lunar-rock" }, 
+            { name: "Sandstone", key: "sandstone" }, { name: "Royal Velvet", key: "royal-velvet" }, 
+            { name: "Mint Chocolate", key: "mint-chocolate" }, { name: "Infrared Heat", key: "infrared-heat" }, 
+            { name: "Plasma Burn", key: "plasma-burn" }, { name: "Cold Steel", key: "cold-steel" }, 
+            { name: "Digital Rain", key: "digital-rain" }, { name: "Copper Rust", key: "copper-rust" }, 
+            { name: "Aurora Borealis", key: "aurora-borealis" }, { name: "Vintage Sepia", key: "vintage-sepia" }, 
+            { name: "Acid Wash", key: "acid-wash" }, { name: "Moonlit", key: "moonlit" }, 
+            { name: "Lava Flow", key: "lava-flow" }, { name: "Emerald City", key: "emerald-city" }, 
+            { name: "Grape Soda", key: "grape-soda" }, { name: "Starfield", key: "starfield" },
+            { name: "Jungle", key: "jungle" }, { name: "Biohazard", key: "biohazard" },
+            // Light Themes
+            { name: "Daylight", key: "daylight" }, { name: "CAD", key: "cad" },
+            { name: "Blueprint Light", key: "blueprint-light" }, { name: "Paper Map", key: "paper-map" },
+            { name: "Arctic Light", key: "arctic-light" }, { name: "Sandstorm", key: "sandstorm" },
+            { name: "Medical", key: "medical" }, { name: "Clean Room", key: "clean-room" },
+            { name: "Graph Paper", key: "graph-paper" }, { name: "Hi-Vis", key: "hi-vis" },
+        ];
+        const SWEEP_DURATION_S = 7.2;
+        
+        // --- Global State ---
+        let aircraftData = {};
+        let displayedAircraft = {};
+        let sessionStats = { uniqueAircraft: new Set(), maxConcurrent: 0, startTime: Date.now(), messagesReceived: 0 };
+        let selectedHex = null;
+        let connectionStatus = "Connecting...";
+        let isPaused = false;
+        let sweepAngle = 0;
+        let prevSweepAngle = 0;
+
+        // --- Settings ---
+        let maxRangeNm = 50;
+        let scopeThemeIndex = 0;
+        let uiTheme = 'default-dark';
+        let aircraftFilter = 'all'; // 'all', 'military', 'civilian'
+
+        // --- UI Elements ---
+        const canvas = document.getElementById('radarCanvas');
+        const ctx = canvas.getContext('2d');
+        const canvasContainer = document.getElementById('canvas-container');
+        const versionDisplay = document.getElementById('version-display');
+        const aircraftListBody = document.getElementById('aircraft-list-body');
+        const metricsPanel = document.getElementById('metrics-panel');
+        const shortcutBar = document.getElementById('shortcut-bar');
+        const scopeStatusBar = document.getElementById('scope-status-bar');
+        const pausedText = document.getElementById('pausedText');
+        const aircraftPopup = document.getElementById('aircraft-popup');
+        const alertContainer = document.getElementById('alert-container');
+        
+        const uiThemeButton = document.getElementById('ui-theme-button');
+        const uiThemeMenu = document.getElementById('ui-theme-menu');
+        const scopeThemeButton = document.getElementById('scope-theme-button');
+        const scopeThemeMenu = document.getElementById('scope-theme-menu');
+        const hideUiButton = document.getElementById('hide-ui-button');
+
+        const leftPanel = document.getElementById('left-panel');
+        const rightPanel = document.getElementById('right-panel');
+        const leftResizer = document.getElementById('left-resizer');
+        const rightResizer = document.getElementById('right-resizer');
+        
+        const helpModal = document.getElementById('help-modal');
+        const closeHelpButton = document.getElementById('close-help-button');
+
+        // --- Utility Functions ---
+        const toRad = (deg) => deg * Math.PI / 180;
+        const toDeg = (rad) => rad * 180 / Math.PI;
+
+        function haversineDistance(lat1, lon1, lat2, lon2) {
+            const R = 3440.065;
+            const dLat = toRad(lat2 - lat1); const dLon = toRad(lon2 - lon1);
+            const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+            return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+        }
+
+        function bearing(lat1, lon1, lat2, lon2) {
+            const [lat1Rad, , lat2Rad, lon2Rad] = [lat1, lon1, lat2, lon2].map(toRad);
+            const dLon = lon2Rad - toRad(lon1);
+            const y = Math.sin(dLon) * Math.cos(lat2Rad);
+            const x = Math.cos(lat1Rad) * Math.sin(lat2Rad) - Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLon);
+            return (toDeg(Math.atan2(y, x)) + 360) % 360;
+        }
+
+        function latLonToScreen(lat, lon, maxRange, centerX, centerY, radius) {
+            const distNm = haversineDistance(HOME_LAT, HOME_LON, lat, lon);
+            if (distNm > maxRange) return null;
+            const brngDeg = bearing(HOME_LAT, HOME_LON, lat, lon);
+            const screenAngleRad = toRad(brngDeg - 90);
+            const distPx = (distNm / maxRange) * radius;
+            return { x: centerX + distPx * Math.cos(screenAngleRad), y: centerY + distPx * Math.sin(screenAngleRad), dist: distNm };
+        }
+        
+        // --- Theme Management ---
+        function applyUiTheme() {
+            document.documentElement.setAttribute('data-ui-theme', uiTheme);
+        }
+        
+        function getScopeThemeColor(colorName) {
+            const themeKey = SCOPE_THEMES[scopeThemeIndex].key;
+            const colorConfig = tailwind.config.theme.extend.colors[themeKey] || {};
+            return colorConfig[colorName] || '#FF00FF';
+        }
+
+        // --- Data Fetching & Processing ---
+        async function fetchData() {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 4000);
+                const response = await fetch(TAR1090_URL, { signal: controller.signal });
+                clearTimeout(timeoutId);
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+                
+                const newData = {};
+                for (const aircraft of data.aircraft || []) {
+                    if ('lat' in aircraft && 'lon' in aircraft) {
+                        const hex = (aircraft.hex || '').trim().toUpperCase();
+                        if (hex) {
+                            newData[hex] = aircraft;
+                            sessionStats.uniqueAircraft.add(hex);
+                            if (['7500','7600','7700'].includes(aircraft.squawk)) {
+                                createEmergencyAlert(aircraft);
+                            }
+                        }
+                    }
+                }
+                aircraftData = newData;
+                sessionStats.messagesReceived = data.messages || sessionStats.messagesReceived;
+                connectionStatus = "OK";
+            } catch (error) {
+                connectionStatus = error.name === 'AbortError' ? "Timeout" : "Error";
+            }
+        }
+        
+        // --- Core Drawing Functions ---
+        function drawScope(cx, cy, radius) {
+            ctx.fillStyle = getScopeThemeColor('background');
+            ctx.fillRect(0,0, canvas.width, canvas.height);
+            ctx.strokeStyle = getScopeThemeColor('grid');
+            ctx.lineWidth = 1.2;
+            ctx.font = `${Math.max(10, radius * 0.035)}px monospace`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            for (let i = 1; i <= 4; i++) {
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius * (i / 4), 0, 2 * Math.PI);
+                ctx.stroke();
+            }
+            ctx.beginPath();
+            ctx.moveTo(cx - radius, cy); ctx.lineTo(cx + radius, cy);
+            ctx.moveTo(cx, cy - radius); ctx.lineTo(cx, cy + radius);
+            for (let i = 0; i < 360; i += 10) {
+                const angleRad = toRad(i);
+                const endR = radius + (i % 90 === 0 ? 12 : (i % 30 === 0 ? 8 : 4));
+                ctx.moveTo(cx + radius * Math.cos(angleRad), cy + radius * Math.sin(angleRad));
+                ctx.lineTo(cx + endR * Math.cos(angleRad), cy + endR * Math.sin(angleRad));
+            }
+            ctx.stroke();
+            
+            // Draw numeric degree markers
+            ctx.fillStyle = getScopeThemeColor('text');
+            ctx.font = `${Math.max(5, radius * 0.015)}px monospace`;
+            for (let i = 20; i < 360; i += 20) {
+                if (i % 90 === 0) continue; // Skip cardinal directions covered by N, E, S, W
+                const angleRad = toRad(i - 90);
+                const textX = cx + (radius + 18) * Math.cos(angleRad);
+                const textY = cy + (radius + 18) * Math.sin(angleRad);
+                ctx.fillText(i.toString(), textX, textY);
+            }
+
+            // Draw cardinal directions
+            const textRadius = radius + 25;
+            ctx.font = `${Math.max(10, radius * 0.035)}px monospace`; // Reset font for cardinal letters
+            ctx.fillText("N", cx, cy - textRadius); ctx.fillText("E", cx + textRadius, cy);
+            ctx.fillText("S", cx, cy + textRadius); ctx.fillText("W", cx - textRadius, cy);
+        }
+
+        function drawSweep(cx, cy, radius) {
+            for (let i = 0; i < 10; i++) {
+                 const angleOffset = sweepAngle - i * 0.2;
+                 const lineAngleRad = toRad(angleOffset);
+                 ctx.beginPath();
+                 ctx.moveTo(cx, cy);
+                 ctx.lineTo(cx + radius * Math.cos(lineAngleRad), cy + radius * Math.sin(lineAngleRad));
+                 ctx.strokeStyle = getScopeThemeColor('sweep');
+                 ctx.globalAlpha = 0.4 - i * 0.04;
+                 ctx.lineWidth = 3;
+                 ctx.stroke();
+            }
+            ctx.globalAlpha = 1.0;
+        }
+        
+        function drawAircraft(w) {
+            const currentTime = Date.now() / 1000;
+            Object.keys(displayedAircraft).forEach(hex => {
+                const ac = displayedAircraft[hex];
+                const timeSinceUpdate = currentTime - ac.lastUpdateTime;
+                if (timeSinceUpdate > SWEEP_DURATION_S * 1.5) { delete displayedAircraft[hex]; return; }
+                const alpha = 1.0 - Math.min(1.0, timeSinceUpdate / SWEEP_DURATION_S) * 0.5;
+                const isEmergency = ['7500', '7600', '7700'].includes(ac.data.squawk) && (Math.floor(currentTime * 4) % 2);
+                let colorKey = ac.data.gnd ? 'ground' : 'aircraft';
+                if (isEmergency) colorKey = 'emergency';
+                else if (hex === selectedHex) colorKey = 'selected';
+                const color = getScopeThemeColor(colorKey);
+                if (ac.trail.length > 1) {
+                    ctx.lineWidth = 2;
+                    for (let i = 0; i < ac.trail.length - 1; i++) {
+                        const p1 = ac.trail[i], p2 = ac.trail[i + 1], ratio = i / (ac.trail.length - 1);
+                        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+                        ctx.strokeStyle = color; ctx.globalAlpha = alpha * (0.2 + 0.8 * ratio); ctx.stroke();
+                    }
+                }
+                ctx.globalAlpha = alpha;
+                const { x, y } = ac.displayPos;
+                ctx.fillStyle = ctx.strokeStyle = color;
+                ctx.lineWidth = 2; ctx.beginPath();
+                if (ac.data.gnd) { ctx.rect(x - 4, y - 4, 8, 8); } 
+                else { ctx.arc(x, y, 4, 0, 2 * Math.PI); }
+                ctx.fill();
+                if (!ac.data.gnd && ac.displayHeading) {
+                    const headingRad = toRad(ac.displayHeading - 90);
+                    ctx.beginPath();
+                    ctx.moveTo(x + 6 * Math.cos(headingRad), y + 6 * Math.sin(headingRad));
+                    ctx.lineTo(x + 12 * Math.cos(headingRad), y + 12 * Math.sin(headingRad));
+                    ctx.stroke();
+                }
+                ctx.fillStyle = getScopeThemeColor('text');
+                const onLeftHalf = x < w / 2;
+                ctx.textAlign = onLeftHalf ? 'left' : 'right';
+                const xPos = onLeftHalf ? x + 15 : x - 15;
+                ctx.font = '12px monospace';
+                ctx.fillText((ac.data.flight || 'N/A').trim(), xPos, y + 5);
+                ctx.font = '10px monospace';
+                ctx.fillText(`${ac.data.alt_baro || '???'}ft | ${ac.data.gs || '???'}kt`, xPos, y + 18);
+            });
+            ctx.globalAlpha = 1.0;
+            ctx.textAlign = 'center';
+        }
+
+        // --- UI Update Functions ---
+        function updateAircraftList() {
+             const sortedAircraft = Object.values(displayedAircraft).sort((a,b) => (a.dist ?? Infinity) - (b.dist ?? Infinity));
+             aircraftListBody.innerHTML = sortedAircraft.length === 0 ? `<tr><td colspan="4" class="text-center p-4 text-[var(--color-text-muted)]">No aircraft in range</td></tr>` : sortedAircraft.map(ac => {
+                 const isSelected = ac.data.hex === selectedHex;
+                 const selectedClass = isSelected ? `background-color: var(--color-selected-row);` : `&:nth-child(odd) { background-color: var(--color-table-odd-row); }`;
+                 return `<tr style="${selectedClass}" class="cursor-pointer" onclick="window.selectAircraft('${ac.data.hex}')">
+                     <td class="table-cell font-bold">${ac.data.flight?.trim() || ac.data.hex.slice(0,6)}</td>
+                     <td class="table-cell text-right">${ac.data.alt_baro || 'N/A'}</td>
+                     <td class="table-cell text-right">${ac.data.gs || 'N/A'}</td>
+                     <td class="table-cell text-right">${ac.dist?.toFixed(1) || 'N/A'}</td>
+                 </tr>`;
+             }).join('');
+        }
+
+        function updateMetricsPanel() {
+            const uptime = ((Date.now() - sessionStats.startTime) / 1000 / 60).toFixed(1);
+            let fastest = { gs: 0 }, closest = { dist: Infinity }, highest = { alt_baro: -99999 }, lowest = { alt_baro: 99999 };
+            let emergencyCount = 0, groundCount = 0, totalAltitude = 0, airborneCount = 0;
+            Object.values(displayedAircraft).forEach(ac => {
+                if (ac.data.gnd) groundCount++;
+                else {
+                    airborneCount++; totalAltitude += ac.data.alt_baro || 0;
+                    if((ac.data.gs || 0) > fastest.gs) fastest = ac.data;
+                    if((ac.data.alt_baro || -99999) > highest.alt_baro) highest = ac.data;
+                    if((ac.data.alt_baro || 99999) < lowest.alt_baro) lowest = ac.data;
+                }
+                if((ac.dist || Infinity) < closest.dist) closest = { ...ac.data, dist: ac.dist };
+                if(['7500', '7600', '7700'].includes(ac.data.squawk)) emergencyCount++;
+            });
+            const avgAltitude = airborneCount > 0 ? (totalAltitude / airborneCount).toFixed(0) : 'N/A';
+            const metricItem = (label, value) => `<div class="flex justify-between"><span>${label}:</span> <span class="font-bold">${value}</span></div>`;
+            metricsPanel.innerHTML = `
+                ${metricItem('Uptime (min)', uptime)} ${metricItem('Max Tracked', sessionStats.maxConcurrent)}
+                ${metricItem('Unique Today', sessionStats.uniqueAircraft.size)} ${metricItem('Messages', sessionStats.messagesReceived.toLocaleString())}
+                <hr class="my-1" style="border-color: var(--color-border);">
+                ${metricItem('On Ground', groundCount)} ${metricItem('Emergency', emergencyCount)} ${metricItem('Avg Altitude', avgAltitude)}
+                <hr class="my-1" style="border-color: var(--color-border);">
+                <div class="text-center font-bold text-sm">Live Bests</div>
+                ${metricItem('Closest', closest.dist !== Infinity ? `${closest.flight?.trim() || closest.hex} (${closest.dist.toFixed(1)} nm)` : 'N/A')}
+                ${metricItem('Fastest', fastest.gs > 0 ? `${fastest.flight?.trim() || fastest.hex} (${fastest.gs} kt)` : 'N/A')}
+                ${metricItem('Highest', highest.alt_baro > -99999 ? `${highest.flight?.trim() || highest.hex} (${highest.alt_baro} ft)` : 'N/A')}
+                ${metricItem('Lowest', lowest.alt_baro < 99999 && airborneCount > 0 ? `${lowest.flight?.trim() || lowest.hex} (${lowest.alt_baro} ft)` : 'N/A')}
+            `;
+        }
+
+        function updateScopeStatus() {
+            scopeStatusBar.innerHTML = [
+                `RANGE: ${maxRangeNm} NM`, `CONN: ${connectionStatus}`, `TRACKED: ${Object.keys(displayedAircraft).length}`, `FILTER: ${aircraftFilter.toUpperCase()}`
+            ].map(item => `<span>${item}</span>`).join('<span class="mx-2">|</span>');
+        }
+
+        function createShortcutBar() {
+            const shortcuts = { "H": "Help", "Space": "Pause", "+/-": "Range", "M": "Mil/Civ/All", "Click &centerdot;": "Details" };
+            const kbdStyle = "font-sans px-1.5 py-0.5 text-xs font-semibold rounded-md border";
+            const kbdColors = `background-color: var(--color-kbd-bg); color: var(--color-kbd-text); border-color: var(--color-kbd-border);`;
+            const shortcutHtml = Object.entries(shortcuts)
+                .map(([key, desc]) => `<div class="flex items-center gap-1"><kbd class="${kbdStyle}" style="${kbdColors}">${key}</kbd> ${desc}</div>`)
+                .join('');
+            shortcutBar.innerHTML = shortcutHtml;
+            document.getElementById('help-shortcut-list').innerHTML = Object.entries(shortcuts)
+                 .map(([key, desc]) => `<div><kbd class="${kbdStyle}" style="${kbdColors}">${key}</kbd> - ${desc}</div>`)
+                .join('');
+        }
+
+        let activeAlerts = new Set();
+        function createEmergencyAlert(aircraft) {
+            const hex = aircraft.hex;
+            if (activeAlerts.has(hex)) return;
+
+            activeAlerts.add(hex);
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'bg-red-500 text-white p-2 rounded-md shadow-lg text-sm alert-animate';
+            alertDiv.innerHTML = `<b>EMERGENCY</b><br>${aircraft.flight?.trim() || hex}<br>Squawk: ${aircraft.squawk}`;
+            alertContainer.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+                activeAlerts.delete(hex);
+            }, 6000);
+        }
+        
+        function isMilitary(hex) {
+            const icao = parseInt(hex, 16);
+            return (icao >= 0xADF7C0 && icao <= 0xADFFFF) || (icao >= 0xAE0000 && icao <= 0xAE7FFF);
+        }
+
+        // --- Main Update & Draw Loop ---
+        function updateAircraftState(cx, cy, radius) {
+            const currentTime = Date.now() / 1000;
+            sessionStats.maxConcurrent = Math.max(sessionStats.maxConcurrent, Object.keys(displayedAircraft).length);
+            
+            Object.values(aircraftData).forEach(ac_latest => {
+                const hex = ac_latest.hex.trim().toUpperCase();
+                if (typeof ac_latest.alt_baro !== 'number' || 
+                   (aircraftFilter === 'military' && !isMilitary(hex)) ||
+                   (aircraftFilter === 'civilian' && isMilitary(hex))) {
+                    if (displayedAircraft[hex]) delete displayedAircraft[hex];
+                    return;
+                }
+
+                const currentBrng = bearing(HOME_LAT, HOME_LON, ac_latest.lat, ac_latest.lon);
+                const sweepBrng = ( (displayedAircraft[hex]?.compassBearing ?? currentBrng) - 90 + 360) % 360;
+                let isSwept;
+                if (sweepAngle > prevSweepAngle) isSwept = (sweepBrng > prevSweepAngle && sweepBrng <= sweepAngle);
+                else if (sweepAngle < prevSweepAngle) isSwept = (sweepBrng > prevSweepAngle || sweepBrng <= sweepAngle);
+
+                if (isSwept) {
+                    const screenPos = latLonToScreen(ac_latest.lat, ac_latest.lon, maxRangeNm, cx, cy, radius);
+                    if (!screenPos) { if(displayedAircraft[hex]) delete displayedAircraft[hex]; return; }
+                    if (!displayedAircraft[hex]) displayedAircraft[hex] = { trail: [] };
+                    const entry = displayedAircraft[hex];
+                    entry.lastUpdateTime = currentTime; entry.displayPos = screenPos;
+                    entry.displayHeading = ac_latest.track; entry.compassBearing = currentBrng;
+                    entry.data = ac_latest; entry.dist = screenPos.dist;
+                    entry.trail.push({x: screenPos.x, y: screenPos.y});
+                    if (entry.trail.length > 10) entry.trail.shift();
+                }
+            });
+        }
+        
+        let lastUiUpdateTime = 0;
+        function gameLoop(time) {
+            const w = canvasContainer.clientWidth;
+            const h = canvasContainer.clientHeight;
+            if (w <= 0 || h <= 0) {
+                requestAnimationFrame(gameLoop);
+                return;
+            }
+            if(canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+            const cx = w / 2, cy = h / 2, radius = Math.min(cx, cy) - 30; // Increased padding for numbers
+            prevSweepAngle = sweepAngle;
+            if (!isPaused) {
+                sweepAngle = (time / 1000 * (360 / SWEEP_DURATION_S)) % 360;
+                updateAircraftState(cx, cy, radius);
+            }
+            drawScope(cx, cy, radius);
+            drawAircraft(w);
+            drawSweep(cx, cy, radius);
+            if(time - lastUiUpdateTime > 333) {
+                updateAircraftList(); updateMetricsPanel(); updateScopeStatus();
+                lastUiUpdateTime = time;
+            }
+            pausedText.classList.toggle('hidden', !isPaused);
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // --- Event Handlers & Initialization ---
+        function init() {
+            versionDisplay.innerHTML = `<a href="https://github.com/dustsignal/adsb-scope" target="_blank" rel="noopener noreferrer" class="hover:underline">v${VERSION}</a>`;
+            
+            // Populate UI Theme Menu
+            const groupedThemes = UI_THEMES.reduce((acc, theme) => {
+                (acc[theme.group] = acc[theme.group] || []).push(theme);
+                return acc;
+            }, {});
+            uiThemeMenu.innerHTML = Object.entries(groupedThemes).map(([group, themes]) => `
+                <div class="px-4 py-1 text-xs font-bold" style="color: var(--color-text-muted);">${group}</div>
+                ${themes.map(t => `<a href="#" class="block px-4 py-2 text-sm hover:bg-[var(--color-button-hover)]" data-theme="${t.key}">${t.name}</a>`).join('')}
+            `).join('');
+
+            // Populate Scope Theme Menu
+            scopeThemeMenu.innerHTML = SCOPE_THEMES.map((t, i) => `<a href="#" class="block px-4 py-2 text-sm hover:bg-[var(--color-button-hover)]" data-theme-id="${i}">${t.name}</a>`).join('');
+
+            const toggleDropdown = (menu) => {
+                document.querySelectorAll('.dropdown-menu').forEach(m => { if (m !== menu) m.classList.add('hidden'); });
+                menu.classList.toggle('hidden');
+            };
+            uiThemeButton.addEventListener('click', (e) => { e.stopPropagation(); toggleDropdown(uiThemeMenu); });
+            scopeThemeButton.addEventListener('click', (e) => { e.stopPropagation(); toggleDropdown(scopeThemeMenu); });
+            document.addEventListener('click', () => { uiThemeMenu.classList.add('hidden'); scopeThemeMenu.classList.add('hidden'); aircraftPopup.classList.add('hidden'); });
+
+            uiThemeMenu.addEventListener('click', (e) => { if(e.target.dataset.theme) { uiTheme = e.target.dataset.theme; applyUiTheme(); }});
+            scopeThemeMenu.addEventListener('click', (e) => { if(e.target.dataset.themeId) scopeThemeIndex = parseInt(e.target.dataset.themeId, 10); });
+            
+            hideUiButton.addEventListener('click', () => {
+                const hiding = !leftPanel.classList.contains('hidden');
+                leftPanel.classList.toggle('hidden', hiding); rightPanel.classList.toggle('hidden', hiding);
+                leftResizer.classList.toggle('hidden', hiding); rightResizer.classList.toggle('hidden', hiding);
+                hideUiButton.textContent = hiding ? 'Show Panels' : 'Hide Panels';
+                displayedAircraft = {};
+            });
+
+            const makeResizable = (panel, resizer) => {
+                resizer.addEventListener('mousedown', () => {
+                    document.body.style.cursor = 'col-resize';
+                    const moveHandler = (e) => {
+                        const newWidth = (resizer === leftResizer) ? e.clientX : document.body.clientWidth - e.clientX;
+                        panel.style.width = `${newWidth}px`;
+                    };
+                    const upHandler = () => {
+                        document.body.style.cursor = 'default';
+                        document.removeEventListener('mousemove', moveHandler);
+                        document.removeEventListener('mouseup', upHandler);
+                    };
+                    document.addEventListener('mousemove', moveHandler);
+                    document.addEventListener('mouseup', upHandler);
+                });
+            };
+            makeResizable(leftPanel, leftResizer);
+            makeResizable(rightPanel, rightResizer);
+
+            canvas.addEventListener('click', (e) => {
+                e.stopPropagation();
+                let clickedHex = null; let closestDist = 15;
+                for (const hex in displayedAircraft) {
+                    const ac = displayedAircraft[hex];
+                    const dist = Math.hypot(e.offsetX - ac.displayPos.x, e.offsetY - ac.displayPos.y);
+                    if (dist < closestDist) { clickedHex = hex; closestDist = dist; }
+                }
+                if (clickedHex && displayedAircraft[clickedHex]) {
+                    const acData = displayedAircraft[clickedHex].data;
+                    let popupContent = '';
+                    for (const [key, value] of Object.entries(acData)) {
+                        popupContent += `${key}: ${JSON.stringify(value)}\n`;
+                    }
+                    aircraftPopup.textContent = popupContent;
+                    aircraftPopup.style.left = `${e.offsetX + 15}px`;
+                    aircraftPopup.style.top = `${e.offsetY + 15}px`;
+                    aircraftPopup.classList.remove('hidden');
+                } else {
+                    aircraftPopup.classList.add('hidden');
+                }
+            });
+
+            window.selectAircraft = (hex) => { selectedHex = selectedHex === hex ? null : hex; };
+            window.addEventListener('keydown', (e) => {
+                if (e.key === ' ') { e.preventDefault(); isPaused = !isPaused; }
+                if (e.key.toLowerCase() === 'h') { helpModal.classList.remove('hidden'); }
+                if (e.key === '+' || e.key === '=') { maxRangeNm = Math.min(200, maxRangeNm + 5); }
+                if (e.key === '-' || e.key === '_') { maxRangeNm = Math.max(5, maxRangeNm - 5); }
+                if (e.key.toLowerCase() === 'm') {
+                    const filters = ['all', 'military', 'civilian'];
+                    aircraftFilter = filters[(filters.indexOf(aircraftFilter) + 1) % filters.length];
+                }
+            });
+            closeHelpButton.addEventListener('click', () => helpModal.classList.add('hidden'));
+            
+            createShortcutBar(); applyUiTheme();
+            fetchData(); setInterval(fetchData, 2000);
+            requestAnimationFrame(gameLoop);
+        }
+        init();
+    }
+    document.addEventListener('DOMContentLoaded', () => setTimeout(runApp, 150));
+    </script>
+</body>
+</html>
