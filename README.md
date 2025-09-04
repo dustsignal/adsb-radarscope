@@ -20,7 +20,7 @@ Using ADSB Scope is simple. All you need is a running instance of an ADS-B decod
 ### Setup
 
 1. **Download:** Save the ```adsb-scope.html``` file to your computer.
-2. **Edit Configuration:** Open the ```adsb-scope.html``` file in a text editor and find the ```Configuration``` section within the ```<script>``` tag at the bottom of the file.
+2. **Edit Configuration:** Open the ```adsb-scope.html``` file in a text editor and find the ```Configuration``` section within the ```<script>``` starting at `line 307`.
    ```javascript
    // --- Configuration ---
    const VERSION = "0.1.7-gamma.b";
@@ -28,11 +28,11 @@ Using ADSB Scope is simple. All you need is a running instance of an ADS-B decod
    const HOME_LAT = 00.00000;                // <-- EDIT THIS
    const HOME_LON = -00.00000;                // <-- EDIT THIS
    ```
-3. **Set Data Source:** Change the \`TAR1090_URL\` to the URL of your \`aircraft.json\` file.
+3. **Set Data Source:** Change the `TAR1090_URL` to the URL of your `aircraft.json` file.
    * If ```adsb-scope.html``` is hosted on the same server as ```tar1090```, you can use a relative path like ```/tar1090/data/aircraft.json```.
    * If you are accessing a ```tar1090``` instance on your local network, use its full URL (e.g., ```http://192.168.1.100/tar1090/data/aircraft.json```).
 > [!IMPORTANT]
-> If the data source is on a different domain, you may encounter CORS (Cross-Origin Resource Sharing) errors. The server hosting ```aircraft.json``` must be configured to allow requests from the domain where you are viewing ```adsb-scope.html```.
+> If the data source is on a different domain, you may encounter CORS (Cross-Origin Resource Sharing) errors and only the UI will load. The server hosting ```aircraft.json``` must be configured to allow requests from the domain where you are viewing ```adsb-scope.html``` to load the data from the json file.
 
 4. **Set Home Location:** Change `HOME_LAT` and `HOME_LON` to your latitude and longitude. This sets the center of the radar scope.
 5. **Launch:** Open the modified ```adsb-scope.html``` file in any modern web browser.
@@ -59,9 +59,9 @@ The interface is designed to be intuitive and informative.
 
 ADSB Scope is built with vanilla JavaScript, HTML, and Tailwind CSS (via a CDN) to keep it simple and portable.
 
-1. **Data Fetching:** A \`fetch\` request is made every 2 seconds to the URL specified in \`TAR1090_URL\`.
+1. **Data Fetching:** A `fetch` request is made every 2 seconds to the URL specified in `TAR1090_URL`.
 2. **Data Processing:** The received JSON data is processed to update the state of tracked aircraft, including their position, altitude, speed, and heading.
-3. **Rendering Loop:** A \`requestAnimationFrame\` loop continuously redraws the HTML5 canvas:
+3. **Rendering Loop:** A `requestAnimationFrame` loop continuously redraws the HTML5 canvas:
    * It draws the static scope grid, range rings, and degree markers.
    * It plots each aircraft's position, heading vector, and data tag.
    * It animates the rotating sweep line and its trailing fade effect.
@@ -71,8 +71,8 @@ ADSB Scope is built with vanilla JavaScript, HTML, and Tailwind CSS (via a CDN) 
 
 You can easily add your own themes.
 
-* **UI Themes:** To add a new UI theme, add a new theme object to the \`UI_THEMES\` array and define its colors by adding a new \`:root[data-ui-theme="your-theme-key"]\` block in the \`<style>\` section.
-* **Scope Themes:** To add a new scope theme, find the \`tailwind.config\` object and add a new color palette object within \`theme.extend.colors\`. Then, add a corresponding entry to the \`SCOPE_THEMES\` array.
+* **UI Themes:** To add a new UI theme, add a new theme object to the `UI_THEMES` array and define its colors by adding a new `:root[data-ui-theme="your-theme-key"]` block in the `<style>` section.
+* **Scope Themes:** To add a new scope theme, find the `tailwind.config` object and add a new color palette object within `theme.extend.colors`. Then, add a corresponding entry to the `SCOPE_THEMES` array.
 
 ## Known Issues
 
