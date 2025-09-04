@@ -1,2 +1,108 @@
-# adsb-scope
-Radar scope display using live ADSB data.
+ADSB Scope
+ADSB Scope is a self-contained, browser-based ADS-B virtual radar display. It's a single HTML file that fetches aircraft data from a tar1090 or dump1090-fa instance and renders it on a classic, round radar scope. It requires no server-side backend, libraries, or complex setup—just a web browser and a source for aircraft data.
+
+Key Features
+Zero Installation: Runs entirely in your web browser from a single HTML file.
+
+Highly Customizable:
+
+20+ UI themes (light and dark modes).
+
+50+ radar scope color themes.
+
+Real-Time Tracking: Fetches and displays aircraft data every 2 seconds.
+
+Responsive UI: Features resizable side panels that can be hidden to maximize the scope view.
+
+Informative Display: Includes panels for a sorted aircraft list, key metrics, and on-scope flight details.
+
+Keyboard Shortcuts: Control range, pause, filter aircraft, and access help with simple key presses.
+
+Getting Started
+Using ADSB Scope is simple. All you need is a running instance of an ADS-B decoder that provides an aircraft.json file, such as tar1090.
+
+Setup
+Download: Save the adsb-scope.html file to your computer.
+
+Edit Configuration: Open the adsb-scope.html file in a text editor and find the Configuration section within the <script> tag at the bottom of the file.
+
+// --- Configuration ---
+const VERSION = "0.1.8-alpha.1";
+const TAR1090_URL = "data/aircraft.json"; // <-- EDIT THIS
+const HOME_LAT = 42.54247;                // <-- EDIT THIS
+const HOME_LON = -71.28537;                // <-- EDIT THIS
+
+Set Data Source: Change the TAR1090_URL to the URL of your aircraft.json file.
+
+If adsb-scope.html is hosted on the same server as tar1090, you can use a relative path like /tar1090/data/aircraft.json.
+
+If you are accessing a tar1090 instance on your local network, use its full URL (e.g., http://192.168.1.100/tar1090/data/aircraft.json).
+
+Note: If the data source is on a different domain, you may encounter CORS (Cross-Origin Resource Sharing) errors. The server hosting aircraft.json must be configured to allow requests from the domain where you are viewing adsb-scope.html.
+
+Set Home Location: Change HOME_LAT and HOME_LON to your latitude and longitude. This sets the center of the radar scope.
+
+Launch: Open the modified adsb-scope.html file in any modern web browser.
+
+Usage
+The interface is designed to be intuitive and informative.
+
+Side Panels: The left panel shows a list of all tracked aircraft, sorted by distance. The right panel displays live metrics and a list of keyboard shortcuts. Both panels can be resized by dragging their borders or hidden completely with the "Hide Panels" button.
+
+Theme Selection: Use the "UI Theme" and "Scope Theme" buttons in the top-right to customize the look and feel.
+
+Aircraft Details: Click on an aircraft on the scope to view its raw data in a popup. Click an aircraft in the side list to highlight it on the scope.
+
+Keyboard Shortcuts
+Key
+
+Action
+
+H
+
+Show/Hide the Help modal
+
+Space
+
+Pause/Resume the radar sweep
+
++ / -
+
+Zoom the radar range in or out
+
+M
+
+Cycle through filters (All/Mil/Civ)
+
+Click on Target
+
+View detailed aircraft data
+
+How It Works
+ADSB Scope is built with vanilla JavaScript, HTML, and Tailwind CSS (via a CDN) to keep it simple and portable.
+
+Data Fetching: A fetch request is made every 2 seconds to the URL specified in TAR1090_URL.
+
+Data Processing: The received JSON data is processed to update the state of tracked aircraft, including their position, altitude, speed, and heading.
+
+Rendering Loop: A requestAnimationFrame loop continuously redraws the HTML5 canvas:
+
+It draws the static scope grid, range rings, and degree markers.
+
+It plots each aircraft's position, heading vector, and data tag.
+
+It animates the rotating sweep line and its trailing fade effect.
+
+UI Updates: The aircraft list and metrics panels are updated at a slightly slower interval to optimize performance.
+
+Customization
+You can easily add your own themes.
+
+UI Themes: To add a new UI theme, add a new theme object to the UI_THEMES array and define its colors by adding a new :root[data-ui-theme="your-theme-key"] block in the <style> section.
+
+Scope Themes: To add a new scope theme, find the tailwind.config object and add a new color palette object within theme.extend.colors. Then, add a corresponding entry to the SCOPE_THEMES array.
+
+License
+This project is licensed under the GNU General Public License v3.0. See the LICENSE file for details.
+
+Copyright (C) 2025 dustsignal
