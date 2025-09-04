@@ -20,7 +20,7 @@ Using ADSB Scope is simple. All you need is a running instance of an ADS-B decod
 ### Setup
 
 1. **Download:** Save the \`adsb-scope.html\` file to your computer.
-2. **Edit Configuration:** Open the \`adsb-scope.html\` file in a text editor and find the \`Configuration\` section within the \`<script>\` tag at the bottom of the file.
+2. **Edit Configuration:** Open the \`adsb-scope.html\` file in a text editor and find the '''Configuration''' section within the \`<script>\` tag at the bottom of the file.
    \`\`\`javascript
    // --- Configuration ---
    const VERSION = "0.1.7-gamma.b";
@@ -47,9 +47,9 @@ The interface is designed to be intuitive and informative.
 
 | Key               | Action                               |
 | ----------------- | ------------------------------------ |
-| \`H\`               | Show/Hide the Help modal             |
-| \`Space\`           | Pause/Resume the radar sweep         |
-| \`+\` / \`-\`         | Zoom the radar range in or out       |
+| H               | Show/Hide the Help modal             |
+| Space           | Pause/Resume the radar sweep         |
+| \`+ / \`-\`         | Zoom the radar range in or out       |
 | \`M\`               | Cycle through filters (All/Mil/Civ)  |
 | \`Click\` on Target | View detailed aircraft data          |
 
