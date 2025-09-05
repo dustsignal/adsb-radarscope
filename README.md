@@ -37,7 +37,7 @@ Using ADSB Radarscope is simple. All you need is a running instance of an ADS-B 
    ```
 4. **Set Data Source:** Change the `TAR1090_URL` to the URL of your `aircraft.json` file.
    * If ```adsb-radar.html``` is hosted on the same server as ```tar1090```, you can use a relative path like ```/tar1090/data/aircraft.json``` or ```/usr/share/dump1090-fa/aircraft.json```.
-   * If you are accessing a ```tar1090```\```dum1090-fa``` instance on your local network, use its full URL (e.g., ```http://192.168.1.100/tar1090/data/aircraft.json```).
+   * If you are accessing a ```tar1090``` or ```dump1090-fa``` instance on your local network, use its full URL (e.g., ```http://192.168.1.100/tar1090/data/aircraft.json```), you may encounter CORS errors at this point depending on your specific setup.
 > [!WARNING]
 > [!CAUTION]
 > **If the adsb-radar.html file is on a different domain / computer / device than your feeder, you may encounter CORS (Cross-Origin Resource Sharing) errors and only the UI will load. The server hosting ```aircraft.json``` must be configured to allow requests from the domain/device/IP/network/point in the space time contiunum where you are loading ```adsb-radar.html``` to load the data from the json file. Or you can try using the CORS extension for Chrome**
@@ -93,6 +93,8 @@ You can easily add your own themes.
 
 ## Future Enhancements
 
+- [ ] Runtime logic to search for aircraft.json in known locations instead of the config setting
+- [ ] Grabing the lat/lon from your feeder instead of the config setting
 - [ ] Change the heading indicator line to an arrow
 - [ ] Set minimum width for side panels
 - [ ] Add heading and sqawk code to aircraft info in the scope
