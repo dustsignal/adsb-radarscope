@@ -41,7 +41,7 @@ Using ADSB Radarscope is simple. All you need is a running instance of an ADS-B 
    const HOME_LON = -00.00000;                // <-- EDIT THIS
    ```
 4. **Set Data Source:** Change the `TAR1090_URL` to the URL of your `aircraft.json` file.
-   * If ```adsb-radar.html``` is hosted on the same server as ```tar1090``` (or 'dump1090-fa'), you can use a relative path like ```/tar1090/data/aircraft.json``` or ```/usr/share/dump1090-fa/aircraft.json```.
+   * If ```adsb-radar.html``` is hosted on the same server as ```tar1090``` (or `dump1090-fa`), you can use a relative path like ```/tar1090/data/aircraft.json``` or ```/usr/share/dump1090-fa/aircraft.json```.
    * If you are accessing a ```tar1090``` or ```dump1090-fa``` instance on your local network, use its full URL (e.g., ```http://192.168.1.100/tar1090/data/aircraft.json```), you may encounter CORS errors at this point depending on your specific setup.
 > [!CAUTION]
 > **If the adsb-radar.html file is on a different domain / computer / device than your feeder, you may encounter CORS (Cross-Origin Resource Sharing) errors and only the UI will load. The server hosting ```aircraft.json``` must be configured to allow requests from the domain/device/IP/network/point in the space time contiunum where you are loading ```adsb-radar.html``` to load the data from the json file. Or you can try using the CORS extension for Chrome**
