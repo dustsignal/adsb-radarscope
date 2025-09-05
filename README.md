@@ -80,6 +80,7 @@ You can easily add your own themes.
 
 ## Known Issues
 
+- [ ] Does not work with some versions of dump1090-fa, investigating.
 - [x] ~~Scope is distorted when adjusting side panels~~
 - [ ] Aircraft are not highlighed on the scope when clicking on them in the left side panel
 - [ ] Aircraft tracks become distorted when resizing the window
