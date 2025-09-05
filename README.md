@@ -50,7 +50,7 @@ Using ADSB Radarscope is simple. All you need is a running instance of an ADS-B 
 5. **UPLOAD!:** Put `adsb-radar.html` on your feeder.
    * For tar1090: `/usr/local/share/tar1090/html`
    * For dump1090-fa: `/usr/share/skyaware/html`
-7. **Launch:** Open the modified ```adsb-radar.html``` file in any modern web browser from the feeder (e.g., ```http://192.168.1.100/tar1090/adsb-radar.html``` or 'http://192.168.1.100/skyaware/adsb-radar.html`)..
+7. **Launch:** Open the modified ```adsb-radar.html``` file in any modern web browser from the feeder (e.g., ```http://192.168.1.100/tar1090/adsb-radar.html``` or `http://192.168.1.100/skyaware/adsb-radar.html`)..
 
 ## Usage
 
