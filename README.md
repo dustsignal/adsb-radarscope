@@ -1,13 +1,16 @@
 # ADSB Radarscope
 
-ADSB Radarscope is a self-contained, browser-based ADS-B virtual radar display. It's a single HTML file that fetches aircraft data from a ```tar1090``` or ```dump1090-fa``` instance and renders it on a classic, round radar scope. It requires no server-side backend, libraries, or complex setup—just a web browser and a source for aircraft data.
+ADSB Radarscope is a self-contained, browser-based ADS-B virtual radar display. It's a single HTML file that fetches aircraft data from a ```tar1090``` (or ```dump1090-fa```) instance and renders it on a classic, round radar scope. It requires no server-side backend, libraries, or complex setup—just a web browser and a source for aircraft data.
+
+> [!NOTE]
+> There are bugs, there are undocumented features that trigger on specific conditions, it's release 1 and you may need to figure things out on your own to get it working for your specific setup. Read the entire README.md because you are most likly hiting the CORS roadblock.
 
 ![Screenshot of ADSB Scope.](/assets/adsb-scope.webp) 
 ![Screenshot of ADSB Scope Light Mode.](/assets/adsb-scope-light.webp)
 
 ## Key Features
 
-* **Almost Zero Installation:** Runs entirely in your web browser from a single HTML file. Set a few configuration variables and simply drop the file in your ```tar1090``` or ```dump1090-fa``` folder.
+* **Almost Zero Installation:** Runs entirely in your web browser from a single HTML file. Set a few configuration variables and simply drop the file in your ```tar1090``` (or ```dump1090-fa```) folder.
 * **Highly Customizable:**
   * 13 UI themes (light and dark modes).
   * 50 radar scope color themes.
@@ -22,8 +25,8 @@ Using ADSB Radarscope is simple. All you need is a running instance of an ADS-B 
 
 ### Setup
 
-1. **Download:** Save the ```adsb-scope.html``` file to your computer.
-2. **Edit Configuration:** Open the ```adsb-scope.html``` file in a text editor and find the ```Configuration``` section within the ```<script>``` starting at `line 307`.
+1. **Download:** Save the ```adsb-radar.html``` file to your computer.
+2. **Edit Configuration:** Open the ```adsb-radar.html``` file in a text editor and find the ```Configuration``` section within the ```<script>``` starting at `line 307`.
 3. 
    ```javascript
    // --- Configuration ---
@@ -33,13 +36,14 @@ Using ADSB Radarscope is simple. All you need is a running instance of an ADS-B 
    const HOME_LON = -00.00000;                // <-- EDIT THIS
    ```
 4. **Set Data Source:** Change the `TAR1090_URL` to the URL of your `aircraft.json` file.
-   * If ```adsb-scope.html``` is hosted on the same server as ```tar1090```, you can use a relative path like ```/tar1090/data/aircraft.json```.
-   * If you are accessing a ```tar1090``` instance on your local network, use its full URL (e.g., ```http://192.168.1.100/tar1090/data/aircraft.json```).
+   * If ```adsb-radar.html``` is hosted on the same server as ```tar1090```, you can use a relative path like ```/tar1090/data/aircraft.json``` or ```/usr/share/dump1090-fa/aircraft.json```.
+   * If you are accessing a ```tar1090```\```dum1090-fa``` instance on your local network, use its full URL (e.g., ```http://192.168.1.100/tar1090/data/aircraft.json```).
+> [!WARNING]
 > [!CAUTION]
-> **If the data source is on a different domain / computer / device than your feeder, you may encounter CORS (Cross-Origin Resource Sharing) errors and only the UI will load. The server hosting ```aircraft.json``` must be configured to allow requests from the domain where you are viewing ```adsb-scope.html``` to load the data from the json file. Or you can try using the CORS extension for Chrome**
+> **If the adsb-radar.html file is on a different domain / computer / device than your feeder, you may encounter CORS (Cross-Origin Resource Sharing) errors and only the UI will load. The server hosting ```aircraft.json``` must be configured to allow requests from the domain/device/IP/network/point in the space time contiunum where you are loading ```adsb-radar.html``` to load the data from the json file. Or you can try using the CORS extension for Chrome**
 
 4. **Set Home Location:** Change `HOME_LAT` and `HOME_LON` to your latitude and longitude. This sets the center of the radar scope.
-5. **Launch:** Open the modified ```adsb-scope.html``` file in any modern web browser.
+5. **Launch:** Open the modified ```adsb-radar.html``` file in any modern web browser from the feeder (e.g., ```http://192.168.1.100/tar1090/adsb-radar.html```)..
 
 ## Usage
 
