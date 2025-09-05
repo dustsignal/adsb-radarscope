@@ -4,6 +4,7 @@ ADSB Radarscope is a self-contained, browser-based ADS-B virtual radar display. 
 
 > [!TIP]
 > Putting `adsb-radar.html` on your feeder in a directory accessable through a browser = 😃
+> 
 > Simply opening `adsb-radar.html` on your desktop = 😭
 
 > [!NOTE]
