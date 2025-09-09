@@ -7,6 +7,7 @@ ADSB Radarscope is a self-contained, browser-based ADS-B virtual radar display. 
 
 
 ## Known Issues
+Please post reports in the Discussions or send them to `adsbscope@dustsignal.dev`
 v1.0.0
 
 No issues reported
