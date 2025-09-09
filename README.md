@@ -7,12 +7,13 @@ ADSB Radarscope is a self-contained, browser-based ADS-B virtual radar display. 
 
 
 ## Known Issues
-Please post reports in the Discussions or send them to `adsbscope@dustsignal.dev`
-v1.0.0
+Please post bug reports in the Discussions or send them to `adsbscope@dustsignal.dev`
+
+### v1.0.0
 
 No issues reported
 
-v0.9.2 through 0.1.1
+### v0.9.2 through 0.1.1
 - [x] ~~Does not work with some versions of dump1090-fa, investigating.~~
 - [x] ~~Scope is distorted when adjusting side panels~~
 - [x] ~~Aircraft are not highlighed on the scope when clicking on them in the left side panel~~
