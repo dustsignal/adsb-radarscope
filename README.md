@@ -30,6 +30,10 @@ No issues reported
 - [x] Add heading and sqawk code to aircraft info in the scope
 - [x] Add airport markers and information to the scope view
 - [ ] Add weather radar to the scope view
+- [ ] Add FAA incongraphic symbols to aircraft. Sourced from FAA documents.
+
+![symbols](assets/ac-symbol.jpg)
+      
 
 ## License
 
