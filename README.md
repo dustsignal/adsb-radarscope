@@ -23,6 +23,8 @@ No issues reported
 
 ## Future Enhancements
 
+- [ ] Aircraft labels never overlap
+- [ ] Aricraft labels never cover the trail
 - [ ] Grabing the lat/lon from your feeder instead of the config setting
 - [ ] Change the heading indicator line to an arrow (currently investigating best apporach through FAA icongraphc documentation)
 - [x] Set minimum width for side panels
