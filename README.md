@@ -23,14 +23,13 @@ No issues reported
 
 ## Future Enhancements
 
-- [x] Runtime logic to search for aircraft.json in known locations instead of the config setting
-- [x] Grabing the lat/lon from your feeder instead of the config setting
+- [ ] Grabing the lat/lon from your feeder instead of the config setting
 - [ ] Change the heading indicator line to an arrow (currently investigating best apporach through FAA icongraphc documentation)
 - [x] Set minimum width for side panels
 - [x] Add heading and sqawk code to aircraft info in the scope
 - [x] Add airport markers and information to the scope view
 - [ ] Add weather radar to the scope view
-- [ ] Add FAA incongraphic symbols to aircraft. Sourced from FAA documents.
+- [ ] Add FAA incongraphic symbols to aircraft. Sourced from FAA icongraphc documentation documents.
 
 ![symbols](assets/ac-symbol.jpg)
       
