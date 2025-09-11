@@ -26,11 +26,11 @@ const CONFIG = {
     DEFAULT_RANGE_NM: 50,
     
     // Data Source Settings
-    DEFAULT_TAR1090_URL: 'http://[your-ip-path]/data/aircraft.json',
+    DEFAULT_TAR1090_URL: '[your-ip-path]/aircraft.json',
     DATA_PATHS: {
-        AIRPORTS: 'http://[your-ip-path]/data/airports.csv',
-        NAVAIDS: 'http://[your-ip-path]/data/navaids.csv',
-        RUNWAYS: 'http://[your-ip-path]/data/runways.csv'
+        AIRPORTS: '[your-ip-path]/data/airports.csv',
+        NAVAIDS: '[your-ip-path]/data/navaids.csv',
+        RUNWAYS: '[your-ip-path]/data/runways.csv'
     },
     FETCH_INTERVAL_MS: 1000,
     FETCH_TIMEOUT_MS: 5000,
@@ -257,5 +257,6 @@ const SCOPE_THEME_COLORS = {
     'graph-paper': { background: '#ffffff', grid: '#add8e6', sweep: '#4682b4', aircraft: '#ff4500', selected: '#32cd32', emergency: '#ff0000', ground: '#4682b4', text: '#00008b', mlat: '#ff6633', adsb: '#ff4500', other: '#ff5522' },
     'hi-vis': { background: '#ffffff', grid: '#c0c0c0', sweep: '#ffaa00', aircraft: '#000000', selected: '#ff00ff', emergency: '#ff0000', ground: '#ffaa00', text: '#000000', mlat: '#333333', adsb: '#000000', other: '#111111' }
 };
+
 
 
