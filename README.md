@@ -14,6 +14,7 @@ Please post bug reports in the Discussions or send them to `adsbscope@dustsignal
 No issues reported
 
 ### v0.9.2 through 0.1.1
+- [ ] Range change enables airport, navaid, runway visibilty.
 - [x] ~~Does not work with some versions of dump1090-fa, investigating.~~
 - [x] ~~Scope is distorted when adjusting side panels~~
 - [x] ~~Aircraft are not highlighed on the scope when clicking on them in the left side panel~~
@@ -23,7 +24,7 @@ No issues reported
 
 ## Future Enhancements
 
-- [ ] Aircraft labels never overlap
+- [x] Aircraft labels never overlap
 - [ ] Aricraft labels never cover the trail
 - [ ] Grabing the lat/lon from your feeder instead of the config setting
 - [ ] Change the heading indicator line to an arrow (currently investigating best apporach through FAA icongraphc documentation)
