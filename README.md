@@ -3,7 +3,7 @@
 ADSB Radarscope is a self-contained, browser-based ADS-B virtual radar display. It fetches aircraft data from a `tar1090` or `dump1090-fa` instance and renders it on a classic, round radar scope. It requires no server-side backend, libraries, or complex setup—just a web browser and a source for aircraft data.
 
 > [!IMPORTANT]
-> v1.0.0 release pending.
+> v1.0.0 release pending. Please use latest version it `testing` and report any issues.
 
 
 ## Known Issues
