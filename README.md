@@ -14,8 +14,8 @@ Please post bug reports in the Discussions or send them to `adsbscope@dustsignal
 No issues reported
 
 ### v0.9.2 through 0.1.1
-- [ ] Range change enables airport, navaid, runway visibilty.
-- [x] ~~Does not work with some versions of dump1090-fa, investigating.~~
+- [ ] Range change enables airport, navaid, runway visibilty
+- [x] ~~Does not work with some versions of dump1090-fa, investigating~~
 - [x] ~~Scope is distorted when adjusting side panels~~
 - [x] ~~Aircraft are not highlighed on the scope when clicking on them in the left side panel~~
 - [x] ~~Aircraft tracks become distorted when resizing the window~~
@@ -32,7 +32,8 @@ No issues reported
 - [x] Add heading and sqawk code to aircraft info in the scope
 - [x] Add airport markers and information to the scope view
 - [ ] Add weather radar to the scope view
-- [ ] Add FAA incongraphic symbols to aircraft. Sourced from FAA icongraphc documentation documents.
+- [ ] Add FAA incongraphic symbols to aircraft. Sourced from FAA icongraphc documentation documents
+- [ ] Aircraft icon choices: FAA standard, triangle, dot, dot box
 
 ![symbols](assets/ac-symbol.jpg)
       
