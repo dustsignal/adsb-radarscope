@@ -434,8 +434,7 @@ html, body {
 
 [data-ui-theme="sandstorm-ui"] {
     --color-bg-primary: #fdf6e3;
-    --color-bg-panel: #f5edd
-e;
+    --color-bg-panel: #f5edde;
     --color-text-primary: #657b83;
     --color-text-muted: #073642;
     --color-border: #eee8d5;
@@ -737,4 +736,5 @@ e;
        display: none !important; 
    }
 }
+
 
