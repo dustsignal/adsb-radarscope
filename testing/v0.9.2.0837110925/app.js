@@ -354,7 +354,7 @@ if (window.tailwind) {
             ctx.fillStyle = ThemeManager.getScopeThemeColor('text');
             
             for (let i = 0; i < 360; i += 10) {
-                const angleRad = MathUtils.toRad(i);
+                const angleRad = MathUtils.toRad(i + 270);
                 const tickLength = (i % 90 === 0) ? 12 : ((i % 30 === 0) ? 8 : 4);
                 const endR = radius + tickLength;
                 
@@ -3324,4 +3324,5 @@ if (window.tailwind) {
     // Cleanup on page unload
     window.addEventListener('beforeunload', () => App.cleanup());
     
+
 })();
