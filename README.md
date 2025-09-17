@@ -11,9 +11,14 @@ ADSB Radarscope is a self-contained, browser-based ADS-B virtual radar display. 
 ## Known Issues
 Please post bug reports in the Discussions or send them to `adsbscope@dustsignal.dev`
 
-### v1.0.0
+### v1.0.0-alpha (please request access if you would like to do testing over enjoying)
 
-No issues reported
+- [ ] Scope render code slowly eats memory due to trail history
+- [ ] Weather radar API call error
+- [ ] Historical playback ocassionaly does not playback when aircraft traffic is dense
+- [ ] Historical playback render errors in Firefox and Opera
+- [ ] Alerts: Military alert showing GA aircraft - Emergency alerts showing -30000ft/min rapid decents
+- [ ] Audio alert with missing alert popup
 
 ### v0.9.2 through 0.1.1
 - [ ] Range change enables airport, navaid, runway visibilty
