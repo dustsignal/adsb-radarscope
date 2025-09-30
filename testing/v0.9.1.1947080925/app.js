@@ -1,5 +1,5 @@
 // ADSB Radarscope
-//  Author: dustsignal & wire99
+//  Author: dustsignal
 //  Version: 0.9.1.1947080925
 //  GitHub: https://github.com/dustsignal/adsb-scope
 //
@@ -3044,4 +3044,5 @@ if (window.tailwind) {
     // Cleanup on page unload
     window.addEventListener('beforeunload', () => App.cleanup());
     
+
 })();
