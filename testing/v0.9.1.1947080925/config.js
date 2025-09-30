@@ -1,5 +1,5 @@
 //  ADSB Radarscope
-//  Author: dustsignal & wire99
+//  Author: dustsignal
 //  Version: 0.9.1.1947080925
 //  GitHub: https://github.com/dustsignal/adsb-scope
 //
@@ -240,4 +240,5 @@ const SCOPE_THEME_COLORS = {
     'clean-room': { background: '#f8f8f8', grid: '#d8d8d8', sweep: '#a0a0a0', aircraft: '#000000', selected: '#0000ff', emergency: '#ff0000', ground: '#888888', text: '#333333', mlat: '#444444', adsb: '#000000', other: '#222222' },
     'graph-paper': { background: '#ffffff', grid: '#add8e6', sweep: '#4682b4', aircraft: '#ff4500', selected: '#32cd32', emergency: '#ff0000', ground: '#4682b4', text: '#00008b', mlat: '#ff6633', adsb: '#ff4500', other: '#ff5522' },
     'hi-vis': { background: '#ffffff', grid: '#c0c0c0', sweep: '#ffaa00', aircraft: '#000000', selected: '#ff00ff', emergency: '#ff0000', ground: '#ffaa00', text: '#000000', mlat: '#333333', adsb: '#000000', other: '#111111' }
+
 };
