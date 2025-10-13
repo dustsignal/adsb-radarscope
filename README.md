@@ -67,6 +67,17 @@ A real-time web-based aircraft tracking application that visualizes ADS-B (Autom
 
 3. **Start a Web Server**
 
+>[!IMPORTANT]
+>If your aircraft.json is on another device from localhost/127.0.0.1 then CORS policy must properly be configured
+>
+>Example CORS polciy setup:
+>
+>```sudo nano /etc/lighttpd/conf-enabled/89-dump1090-fa.conf```
+>
+>add ```setenv.add-response-header = ( "Access-Control-Allow-Origin" => "*" )```
+>
+>save and then ```sudo service lighttpd restart```
+
    **Option A: Python**
    ```bash
    python -m http.server 8000
