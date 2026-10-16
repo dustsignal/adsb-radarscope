@@ -1,3 +1,8 @@
+> **Archived: version 1 is no longer supported.**
+> This branch preserves the original v1 repository for historical reference.
+> Use [ADSB Radarscope v2](https://github.com/dustsignal/adsb-radarscope) for new installations.
+> The original [v1.0.16 release](https://github.com/dustsignal/adsb-radarscope/releases/tag/v1) remains available without ongoing maintenance or fixes.
+
 # ADSB Radarscope v1.0.16
 
 A real-time web-based aircraft tracking application that visualizes ADS-B (Automatic Dependent Surveillance-Broadcast) data on a radar-like display.
