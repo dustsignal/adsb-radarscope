@@ -1,0 +1,152 @@
+/* ADSB Radarscope
+   Author: dustsignal
+   GitHub: https://github.com/dustsignal/adsb-radarscope
+
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   index.css — Global stylesheet
+
+   App-wide styles: Tailwind layers plus base radar/theme styling and fonts. Edit
+   for global look-and-feel; component-level styling generally uses Tailwind
+   utility classes inline.
+
+   Overall:  ADSB-BL2.0-APP10001-BETA-VER2.5.0-BETA.67-BUILD0067-SCO0067
+   File rev: index @ r2 (2026-10-16)
+*/
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #070b12;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.settings-scrollbar {
+  scrollbar-color: rgba(148, 163, 184, 0.55) transparent;
+  scrollbar-width: thin;
+}
+
+.settings-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.settings-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.settings-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.55);
+  border: 2px solid transparent;
+  border-radius: 2px;
+  background-clip: padding-box;
+}
+
+/* Custom fonts styling fallback overrides */
+.font-mono {
+  font-family: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+
+@font-face {
+  font-family: 'Radar VFD';
+  src: url('./assets/radar-vfd.woff') format('woff');
+  font-display: swap;
+}
+
+/* Effects stay on the radar surface. Settings retain their readable UI font. */
+.vfd-effect .font-mono {
+  font-family: 'Radar VFD', ui-monospace, monospace;
+  text-shadow: 0 0 3px currentColor, 0 0 9px rgb(75 255 196 / 28%);
+}
+.vfd-effect [role='dialog'], .vfd-effect [role='dialog'] * {
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  text-shadow: none;
+}
+.crt-scope { overflow: hidden; }
+.crt-scope canvas { filter: contrast(1.08) saturate(1.14); }
+.crt-glass {
+  position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(to bottom, transparent 0px, transparent 2px, rgb(0 0 0 / 22%) 3px, transparent 4px),
+    repeating-linear-gradient(to right, rgb(255 60 60 / 3%) 0 1px, rgb(60 255 130 / 3%) 1px 2px, rgb(70 130 255 / 3%) 2px 3px);
+  box-shadow: inset 0 0 70px 18px rgb(0 0 0 / 55%);
+  border-radius: 1.5%;
+}
+.crt-glass::after {
+  content: ''; position: absolute; inset: 0; opacity: .35;
+  background: linear-gradient(transparent 42%, rgb(170 255 210 / 8%) 49%, transparent 55%);
+  animation: crt-drift 11s linear infinite;
+}
+@keyframes crt-drift { from { transform: translateY(-50%); } to { transform: translateY(50%); } }
+@media (prefers-reduced-motion: reduce) { .crt-glass::after { animation: none; } }
+.settings-compact .settings-description, .settings-compact .theme-description { display: none; }
+.settings-compact .settings-section-heading { margin-bottom: 6px; }
+.settings-compact section { padding: 10px; }
+.settings-compact fieldset { margin-bottom: 10px; }
+.settings-compact fieldset legend { margin-bottom: 5px; }
+.settings-compact fieldset > div { gap: 5px; }
+.settings-compact button { min-height: 30px; }
+.settings-compact [role='switch'] { min-height: 24px; }
+.settings-compact .scope-theme-card { min-height: 48px; padding: 7px; }
+.settings-compact .scope-theme-card > span:first-child { height: 8px; margin-bottom: 5px; }
+.settings-compact [role='tabpanel'] > .grid { gap: 10px; }
+.settings-compact [role='tabpanel'] .min-h-9 { min-height: 30px; }
+.settings-compact header, .settings-compact footer { padding-top: 8px; padding-bottom: 8px; }
+.setup-screen { position: fixed; inset: 0; overflow: auto; display: grid; place-items: center; padding: 12px; background: radial-gradient(ellipse at top, #102a23, #040a09 70%); color: #d9fff0; font-family: ui-sans-serif, system-ui, sans-serif; }
+.setup-card { width: min(100%, 680px); padding: 20px; background: #081510; border: 1px solid #315a49; border-radius: 12px; box-shadow: 0 20px 70px #0008; }
+.setup-eyebrow { color: #78d7ad; font-size: 10px; letter-spacing: .16em; }
+.setup-card h1 { margin: 4px 0; font-size: 22px; font-weight: 650; }
+.setup-card header p { font-size: 12px; color: #a5c6b7; margin-bottom: 14px; }
+.setup-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
+.setup-fields label { min-width: 0; font-size: 12px; font-weight: 600; }
+.setup-wide { grid-column: 1 / -1; }
+.setup-fields input, .setup-fields select { display: block; margin-top: 4px; width: 100%; min-width: 0; height: 34px; padding: 5px 9px; border: 1px solid #385c4c; border-radius: 4px; background: #030c08; color: #ecfff5; font-size: 13px; }
+.setup-fields small { display: block; font-size: 10px; font-weight: 400; color: #a5c6b7; margin-top: 4px; }
+.setup-toggles { display: flex; flex-wrap: wrap; gap: 9px 16px; padding: 14px 0; font-size: 12px; }
+.setup-toggles label { display: flex; gap: 6px; align-items: center; }
+.setup-toggles input { accent-color: #80e6b7; }
+.setup-card footer { display: flex; justify-content: space-between; gap: 10px; border-top: 1px solid #294a3b; padding-top: 12px; }
+.setup-card button { min-height: 36px; border: 1px solid #426a56; border-radius: 4px; padding: 6px 12px; font-size: 12px; cursor: pointer; }
+.setup-card .setup-primary { background: #91ecc1; color: #042415; font-weight: 700; }
+.setup-card :is(input,select,button):focus-visible { outline: 2px solid #b0ffdc; outline-offset: 2px; }
+.setup-error { color: #ffadad; font-size: 12px; margin-bottom: 8px; }
+@media (max-height: 650px) { .setup-card { padding: 12px 16px; } .setup-card h1 { font-size: 18px; } .setup-card header p { margin-bottom: 8px; } .setup-fields { gap: 6px 12px; } .setup-fields input, .setup-fields select { height: 30px; } .setup-toggles { padding: 10px 0; } }
+
+.settings-compact .settings-number { display: grid; grid-template-columns: minmax(0,1fr) minmax(130px,1fr); gap: 8px; align-items: center; margin-bottom: 8px; }
+.settings-compact .settings-number > div:first-child { margin: 0; }
+.settings-compact .settings-number > div:first-child > span { display: none; }
+.settings-compact .map-layer-options { display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px; }
+.settings-compact .airspace-class-options { grid-column: 1 / -1; margin-left: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; padding: 8px; }
+.settings-compact .airspace-class-options > div:first-child { grid-column: 1 / -1; }
+@media (min-width: 1024px) {
+  .settings-compact #settings-panel-visuals > .grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .settings-compact .display-primary { display: contents; }
+  .settings-compact .display-primary > section { margin-top: 0; align-self: start; }
+
+}
+
+.display-primary { display: flex; flex-direction: column; gap: 12px; }
+.settings-number > div { min-width: 0; }
+.settings-number input[type='range'] { min-width: 0; width: 0; }
+.settings-number input[type='number'] { flex-shrink: 0; }
+@media (min-width: 1024px) { .settings-compact .display-primary { display: contents; } }

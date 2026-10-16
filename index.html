@@ -1,0 +1,40 @@
+<!-- ADSB Radarscope
+     Author: dustsignal
+     GitHub: https://github.com/dustsignal/adsb-radarscope
+
+     This program is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     index.html — HTML shell / mount page
+
+     The single-page HTML shell Vite serves. Provides the #root mount node, font
+     preloads, and loads src/main.tsx. Edit for document-level concerns (title,
+     meta tags, fonts).
+
+     Overall:  ADSB-BL2.0-APP10001-BETA-VER2.5.0-BETA.67-BUILD0067-SCO0067
+     File rev: index @ r1 (2026-06-19) -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ADSB Radarscope v2</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='27' fill='%23070b12' stroke='%2300e5ff' stroke-width='4'/%3E%3Cpath d='M32 8v48M8 32h48' stroke='%2300e5ff' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%2300e5ff'/%3E%3C/svg%3E" />
+    <!-- Google Fonts for retro/modern styling -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:ital,wght@0,300;0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;600;800&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-[#070b12] text-slate-100 overflow-hidden">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

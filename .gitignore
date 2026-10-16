@@ -1,0 +1,50 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules
+.build-venv/
+__pycache__/
+*.py[cod]
+
+# Interrupted atomic data downloads/builds
+public/data/.*.part
+public/data/.*.tmp
+
+# Build outputs
+dist
+dist-ssr
+*.local
+
+# Editor files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment / local secrets — never commit
+.env
+.env.*
+!.env.example
+ssh.md
+
+# Large offline aviation datasets — distributed via GitHub Releases, not the repo.
+# Place these under public/data/ locally (see README) before building.
+public/data/
+data/
+*.mbtiles
+*.csv
+
+# Local release staging
+.release/

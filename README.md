@@ -1,423 +1,272 @@
-# ADSB Radarscope v1.0.16
+![Radar overview with aircraft labels and airspace overlays](webp/hero.webp)
 
-A real-time web-based aircraft tracking application that visualizes ADS-B (Automatic Dependent Surveillance-Broadcast) data on a radar-like display.
+# ADSB Radarscope v2
 
-<p align="center">
-  <img width="49%" src="./assets/dark-scope.webp">
-  <img width="49%" src="./assets/light-scope.webp">
-</p>
-<p align="center">
-  <img width="49%" src="./assets/settings.webp">
-  <img width="49%" src="./assets/real-time.webp">
-</p>
+ADSB Radarscope displays live ADS-B aircraft data in a web browser. Connect it
+to a dump1090, readsb, tar1090, PiAware, or compatible `aircraft.json` feed.
 
-![License](https://img.shields.io/badge/license-GPLv3-blue.svg)
-![Version](https://img.shields.io/badge/version-1.0.16-green.svg)
+- Track aircraft with position labels, trails, and prediction vectors.
+- Select aircraft, search traffic, and sort the aircraft table.
+- Show airports, runways, navigation aids, and controlled airspace.
+- Show separation conflicts and emergency squawk alerts.
+- Select the Phosphor or Console layout and a radar color theme.
+
+**Version:** v2.5.0 beta 67 · **License:** [GPL](LICENSE)
+
+**Version 1 is archived and no longer supported.** Use v2 for new installations.
+The [v1 archive](https://github.com/dustsignal/adsb-radarscope/tree/archive/v1) and
+[original v1.0.16 release](https://github.com/dustsignal/adsb-radarscope/releases/tag/v1)
+remain available for historical reference.
 
 ## Features
 
-### Real-Time Aircraft Tracking
-- Live aircraft position updates from tar1090, FlightAware PiAware, or compatible data sources
-- Rotating radar sweep effect with customizable themes
-- Aircraft trails with gradient fading
-- Vector prediction showing future positions
-- Clickable aircraft for detailed information
+### Aircraft tracking
 
-### Advanced Visualization
-- **60+ Scope Themes**: Classic CRT green, amber, military, aviation-inspired, and more
-- **35+ UI Themes**: Dark and light color schemes
-- **Airport & Navaid Display**: Shows nearby airports, navigation aids, and runway layouts
-- **Emergency Detection**: Visual and audio alerts for emergency squawk codes
-- **Customizable Range**: Zoom from 5nm to 500nm
+The radar shows aircraft positions, callsigns, altitude, speed, trails, and
+prediction vectors when the receiver supplies the required data. Select an
+aircraft to inspect its details. Use the aircraft table to sort traffic or the
+search palette to find an aircraft or airport.
 
-### Data Views
-- **Radar Scope**: Traditional radar display with rotating sweep
-- **Aircraft Details Panel**: Comprehensive telemetry for selected aircraft
+### Alerts
 
-### Performance Optimized
-- Canvas-based rendering with hardware acceleration
-- Object pooling for memory efficiency
-- Dirty region tracking for minimal redraws
-- Desktop-first responsive design
-- Handles 50+ aircraft simultaneously
+Separation conflict indicators identify aircraft that meet the configured
+conflict criteria. Emergency squawk indications identify codes **7500**, **7600**,
+and **7700**. Enable sound in Settings to hear alerts.
 
-## Quick Start
+### Aviation overlays
 
-### Prerequisites
-- Web browser (Chrome, Firefox, Edge, or Safari)
-- ADS-B data source (tar1090, FlightAware PiAware, dump1090, or compatible)
-- HTTP server for local hosting
+Show airports, runway layouts, navigation aids, and controlled airspace. Enable
+only the layers you need. Reference data is processed locally in the browser.
 
-### Installation
+### Display layouts
 
-#### Option 1: Download Release Archive
+| Layout | Description |
+| --- | --- |
+| Phosphor | Green radar display with CRT styling and floating information panels. |
+| Console | Dual-pane display with a persistent aircraft list and inspection panel. |
 
-1. **Download and Extract**
-   ```bash
-   # Extract the release archive to your desired location
-   unzip adsb-radarscope-v1.0.16.zip
-   cd adsb-radarscope
+Radar color themes are independent of the layout: Phosphor, Console, Amber CRT,
+Arctic Blue, Cyberpunk, and Parchment.
+
+## Requirements
+
+For a source build, install:
+
+- Python 3.9 or later, with `pip` and `venv` available.
+- Node.js 18 or later, with npm available on `PATH`.
+- A web browser with Canvas, Web Workers, WebAssembly, and local storage support.
+
+Internet access is necessary to download dependencies and reference data.
+A receiver connection is necessary for live traffic. A compiled release needs
+Python and a browser for local operation; it does not need Node.js.
+
+## Build and start
+
+1. Extract the complete source package.
+2. Open a terminal in the folder that contains `build.py` and `package.json`.
+3. Start the build procedure:
+
+   ```sh
+   python build.py --serve
    ```
 
-2. **Configure Your Settings**
-   - Open `config.js` in a text editor
-   - Update `DEFAULT_HOME_LAT` and `DEFAULT_HOME_LON` with your coordinates
-   - Update `DEFAULT_TAR1090_URL` with your data source URL
-   - See `CONFIG_EXAMPLE.md` for detailed configuration options
+   On Windows, use `py -3` if `python` is not available. On macOS or Linux, use
+   `python3` if necessary.
 
-3. **Start a Web Server**
+4. Follow the prompts. Keep the default output folder, `dist/`. Select data
+   updates and dependency installation. Set the home latitude, longitude, receiver
+   URL, range, polling interval, layout, colors, and sound. WebSocket setup is optional.
+5. Review the execution plan. Confirm the plan to start the build.
+6. Wait for **RELEASE BUILD READY**. The default output folder is `dist/`.
+7. Open `http://localhost:8080` if the browser does not open automatically.
+8. Confirm that the feed connects and aircraft with valid positions appear.
+   Check that the home position and range cover the receiver area.
 
->[!IMPORTANT]
->If your aircraft.json is on another device from localhost/127.0.0.1 then CORS policy must properly be configured
->
->Example CORS polciy setup:
->
->```sudo nano /etc/lighttpd/conf-enabled/89-dump1090-fa.conf```
->
->add ```setenv.add-response-header = ( "Access-Control-Allow-Origin" => "*" )```
->
->save and then ```sudo service lighttpd restart```
+The builder performs these operations:
 
-   **Option A: Python**
-   ```bash
-   python -m http.server 8000
+1. Checks the project and build tools.
+2. Downloads missing or invalid airport, runway, and navigation aid CSV files.
+   Reuses valid files unless an update is selected.
+3. Generates missing airspace data, or updates it when selected. Installs the
+   required airspace tools in `.build-venv/` and exports individual airspace tiles.
+4. Installs npm dependencies from the lock file and checks production dependencies
+   for vulnerabilities of high severity or greater.
+5. Builds the application, copies `serve.py`, and writes `runtime-config.json`
+   with the selected first-run settings.
+
+To build without starting a server, use `python build.py`. To stop a running
+server, press `Ctrl+C`.
+
+### Build without prompts
+
+Replace the example feed address and coordinates with your station values:
+
+```sh
+python build.py --yes --feed-url http://192.168.1.100/tar1090/data/aircraft.json --home-latitude 40.0 --home-longitude -75.0 --range-nm 75 --poll-interval 1000 --ui-theme console --serve
+```
+
+For PiAware, the feed can be
+`http://192.168.1.100:8080/data/aircraft.json`. Receiver paths and ports can differ.
+Use an absolute receiver URL with the local server. The default relative path,
+`/tar1090/data/aircraft.json`, requires a feed at that path on the application server.
+
+### Build options
+
+| Option | Function |
+| --- | --- |
+| `--help` | List all options. |
+| `--check` | Check npm availability and reference data without changing files. This does not compile the application. |
+| `--yes --dry-run` | Show the build plan without executing it. |
+| `--refresh-data` | Download current airport, runway, and navigation aid CSV files. |
+| `--refresh-airspace` | Download FAA airspace data and generate new tiles. |
+| `--skip-airspace` | Skip airspace generation and its data requirement. |
+| `--data-only` | Prepare reference data without compiling the application. |
+| `--skip-install` | Reuse installed npm dependencies. |
+| `--npm PATH` | Select an npm executable explicitly. |
+| `--serve` | Start the local server after the build. |
+| `--serve-only --output dist` | Serve an existing `dist/` release without rebuilding. Specify the output folder explicitly. |
+| `--port 8081` | Change the local server port. |
+| `--no-open` | Start the server without opening a browser. |
+
+Additional first-run options are `--scope-theme`, `--enable-sound`, `--ws-url`,
+and `--enable-websocket`. Use `--enable-websocket` with `--ws-url`. The bridge
+must already exist and emit compatible JSON messages; the browser does not decode
+raw Beast binary data, and the builder does not install a bridge.
+
+## Install a compiled release
+
+1. Copy or extract the complete release folder to the destination computer.
+2. Keep `index.html`, `assets/`, `data/`, `runtime-config.json`, `serve.py`, and
+   the supplied WebAssembly files together.
+3. Open a terminal in the release folder and run:
+
+   ```sh
+   python serve.py
    ```
-   This starts a Python HTTP server on port 8000. Python comes pre-installed on most systems.
 
-   **Option B: Node.js**
-   ```bash
-   npx http-server -p 8000
-   ```
-   This uses Node.js to start an HTTP server. Requires Node.js to be installed.
+4. Open `http://localhost:8080` if necessary. Keep the terminal open during use.
+5. Press `Ctrl+C` to stop the server.
 
-   **Option C: PHP**
-   ```bash
-   php -S localhost:8000
-   ```
-   This uses PHP's built-in web server. Requires PHP to be installed.
+To change the port, use `python serve.py --port 8081`. The server accepts
+connections from the local computer only. It includes a feed relay for receivers
+that do not supply browser CORS headers.
 
-4. **Open in Browser**
-   Navigate to `http://localhost:8000`
+If the launcher reports that a compiled release is missing, check the release
+contents. From the source folder, you can serve the build explicitly:
 
-   **Verification**: You should see the radar scope interface with a rotating sweep. If you see aircraft, your setup is working correctly. If not, see the Troubleshooting section below.
-
-#### Option 2: Clone from GitHub
-
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/dustsignal/adsb-scope.git
-   cd adsb-scope
-   ```
-
-2. **Configure Your Settings**
-   - Open `config.js` in a text editor
-   - Update `DEFAULT_HOME_LAT` and `DEFAULT_HOME_LON` with your coordinates
-   - Update `DEFAULT_TAR1090_URL` with your data source URL
-   - See `CONFIG_EXAMPLE.md` for detailed configuration options
-
-3. **Start a Web Server**
-   Choose one of the server options above (Python, Node.js, or PHP)
-
-4. **Open in Browser**
-   Navigate to `http://localhost:8000`
-
-## Configuration
-
-### Required Settings
-
-Edit `config.js` and set these values:
-
-```javascript
-// Your radar center location
-DEFAULT_HOME_LAT: 12.345678,
-DEFAULT_HOME_LON: -87.654321,
-
-// Your ADS-B data source
-DEFAULT_TAR1090_URL: 'http://192.168.1.100/tar1090/data/aircraft.json',
+```sh
+python build.py --serve-only --output dist
 ```
 
-### Data Source Setup
+### Install on a web server
 
-#### tar1090 (Local)
-```javascript
-DEFAULT_TAR1090_URL: 'http://localhost/tar1090/data/aircraft.json'
+Copy the complete release contents to a static web server. Serve JavaScript as
+JavaScript and `.wasm` files as `application/wasm`. Relative asset paths permit
+installation in a server subdirectory.
+
+A static server does not provide the Python feed relay. Configure a same-origin
+feed proxy or permit the application origin in the receiver's CORS response
+headers. Use an HTTPS feed when the application uses HTTPS. A shared local
+network does not remove browser CORS requirements.
+
+## Configure and operate
+
+Open **Settings → System** to change the home position, feed URL, and polling
+interval. Select **Apply & Save Settings**. Saved browser settings take priority
+over `runtime-config.json`. A rebuild does not replace an existing user's settings.
+
+For a different default configuration, run the builder again or edit the settings
+in the release's `runtime-config.json`. Reload the application after an edit.
+
+- Click an aircraft to show its details.
+- Drag the scope to move the center. Use the mouse wheel to change range.
+- Press `Ctrl+K` or `Cmd+K` to search for aircraft or airports.
+- Use Settings to change overlays, trails, vectors, colors, and sounds.
+- Interact with the page to permit browser audio playback.
+
+Reference data operates locally after installation. To update it and rebuild, run:
+
+```sh
+python build.py --refresh-data --refresh-airspace
 ```
 
-#### tar1090 (Network)
-```javascript
-DEFAULT_TAR1090_URL: 'http://192.168.1.100/tar1090/data/aircraft.json'
-// Replace 192.168.1.100 with your tar1090 server IP address
-```
+Deploy the new output folder after the build completes.
 
-#### FlightAware PiAware (Local)
-```javascript
-DEFAULT_TAR1090_URL: 'http://localhost:8080/data/aircraft.json'
-// or
-DEFAULT_TAR1090_URL: 'http://piaware.local:8080/data/aircraft.json'
-```
+## Screenshots
 
-#### FlightAware PiAware (Network)
-```javascript
-DEFAULT_TAR1090_URL: 'http://192.168.1.100:8080/data/aircraft.json'
-// Replace 192.168.1.100 with your PiAware IP address
-// Note: PiAware typically runs on port 8080
-```
+### Full-viewport radar
 
-#### Remote Source (Requires CORS)
-```javascript
-DEFAULT_TAR1090_URL: 'https://your-server.com/tar1090/data/aircraft.json'
-// Note: Remote sources must have CORS headers configured
-```
+![Full-viewport radar display](webp/full-viewport-radar.webp)
 
-### Optional Settings
+### Phosphor and Console layouts
 
-See `CONFIG_EXAMPLE.md` for comprehensive configuration documentation including:
-- Performance tuning
-- Trail customization
-- Display settings
-- Theme selection
-- Range limits
-- Alert configuration
+**Phosphor**
 
-## Usage
+![Phosphor layout](webp/theme-phosphor.webp)
 
-### Radar Scope View
+**Console**
 
-**Mouse Controls:**
-- **Click aircraft**: Select and view details
-- **Scroll wheel**: Zoom in/out
-- **Click compass rings**: Quick zoom to specific range
+![Console layout](webp/theme-console.webp)
 
-**Keyboard Shortcuts:**
-- `Space`: Pause/Resume updates
-- `+/-`: Zoom in/out
-- `R`: Reset view
-- `V`: Toggle vectors
-- `T`: Toggle trails
-- `A`: Toggle airports
-- `N`: Toggle navaids
-- `W`: Toggle runways
-- `D`: Toggle label details
-- `?`: Show help
+### Aircraft data table
 
-**Toggle Controls:**
-- Vectors: Show predicted future positions
-- Trails: Display aircraft movement history
-- Airports: Show nearby airports
-- Navaids: Display navigation aids
-- Runways: Show runway layouts
-- Details: Extended aircraft labels
+![Aircraft data table](webp/data-table.webp)
 
+### Separation alerts
 
-### Settings Panel
+![Separation conflict display](webp/conflict-separation.webp)
 
-Access comprehensive settings:
-- Home position coordinates
-- Data source management
-- Performance optimization
-- Display customization
-- Trail configuration
-- Theme selection
-- Sound alerts
+![Separation alert in the active traffic panel](webp/conflict-separation-2.webp)
 
-![Settings Panel](./assets/settings.webp)
+### Settings
 
-## File Structure
+**Display**
 
-```
-adsb-radarscope/
-├── index.html           # Main application
-├── app.js               # Application logic
-├── config.js            # Configuration settings
-├── styles.css           # Compiled styles
-├── README.md            # This file
-├── CONFIG_EXAMPLE.md    # Configuration guide
-├── INSTALL.txt          # Installation guide
-└── LICENSE              # License file
-```
+![Display settings](webp/settings-display.webp)
 
-## Themes
+**Tuning**
 
-New Top Bar
-![Topbar](./assets/topbar.webp)
+![Tuning settings for trails, aviation filters, and audio alerts](webp/settings-tuning.webp)
 
-### Scope Themes (60+)
-- **CRT Classic**: Green, Amber, Arctic Blue
-- **Military**: USAF Tactical, Navy Strike, Army Green, RAF Grey
-- **Aviation**: Pan Am Blue, TWA Red, Eastern Silver, Braniff Orange
-- **Modern**: Cyberpunk, Plasma Burn, Digital Rain, Aurora Borealis
-- **Light**: Daylight, CAD, Paper Map, Medical
+**System**
 
-### UI Themes (35+)
-- **Dark**: Default, Slate, Abyss, Forest, Crimson, Royal
-- **Light**: Default, Stone, Mint, Sky, Lavender, Paper
-- **Specialty**: CRT styles, Arctic, Night Vision, Cyberpunk
+![System settings](webp/settings-system.webp)
 
-## Emergency Codes
+**Themes**
 
-The application automatically detects and highlights emergency squawk codes:
+![Radar color theme settings](webp/settings-themes.webp)
 
-- **7500**: Hijacking/Unlawful Interference
-- **7600**: Radio Communication Failure
-- **7700**: General Emergency
+## Reference data
 
-Enable sound alerts in Settings to receive audio notifications.
+| Data | Provider or format | Use |
+| --- | --- | --- |
+| Airports | OurAirports CSV | Airport positions and labels. |
+| Runways | OurAirports CSV | Runway geometry. |
+| Navigation aids | OurAirports CSV | Navigation aid positions and symbols. |
+| Controlled airspace | FAA data, MBTiles, and exported tiles | Airspace boundaries for the visible area. |
 
-## Performance Tips
+The builder downloads or generates these files in `public/data/` and includes
+them in the compiled release. Keep the complete `data/` directory when you copy
+a release. Do not substitute the archived v1 data files.
 
-### For Lower-End Systems:
-- Reduce `MAX_TRAIL_LENGTH` to 25-30
-- Increase `CANVAS_RENDER_THROTTLE_MS` to 32ms
-- Reduce `MAX_AIRPORTS_DISPLAY` to 20-30
-- Disable runway display
-- Use simpler scope themes (Classic Green, Amber)
-
-### For High-End Systems:
-- Keep all default settings
-- Enable all display options
-- Use complex themes
-- Increase `MAX_TRAIL_LENGTH` to 100+
+After installation, these overlays do not require a separate online map service.
+Live traffic still requires the receiver feed. Coverage depends on the reference
+data supplied with the release.
 
 ## Troubleshooting
 
-### No Aircraft Appearing
-
-1. **Verify Data Source URL**
-   - Open `config.js` and check `DEFAULT_TAR1090_URL` is correct
-   - For PiAware, ensure you're using port 8080
-   - For tar1090, typically no port or port 80
-
-2. **Test Data Source Directly**
-   - Open the data URL in your browser (e.g., `http://192.168.1.10:8080/data/aircraft.json`)
-   - You should see JSON data with aircraft information
-   - If you get an error, the data source is not accessible
-
-3. **Check Browser Console**
-   - Press F12 to open developer tools
-   - Look for red error messages in the Console tab
-   - Common errors: "Failed to fetch", "CORS error", "404 Not Found"
-
-4. **Verify ADS-B Receiver**
-   - Ensure your ADS-B receiver is running
-   - Check that it's receiving data from aircraft
-   - Try accessing the receiver's web interface
-
-### Performance Issues
-
-1. **Reduce Visual Complexity**
-   - Lower trail length and display options in Settings
-   - Disable airports and runways if not needed
-   - Try simpler themes (Classic Green instead of Aurora Borealis)
-
-2. **Adjust Render Settings**
-   - In `config.js`, increase `CANVAS_RENDER_THROTTLE_MS` to 32ms
-   - Reduce `MAX_TRAIL_LENGTH` to 25-30
-   - Increase `UI_UPDATE_INTERVAL_MS` to 1000ms
-
-3. **Browser Optimization**
-   - Close other browser tabs
-   - Disable unnecessary browser extensions
-   - Update to latest browser version
-   - Enable hardware acceleration in browser settings
-
-### Settings Not Saving
-
-1. **Check localStorage**
-   - Ensure browser allows localStorage (check privacy settings)
-   - Try accessing site without private/incognito mode
-
-2. **Clear and Reconfigure**
-   - Click "Clear Storage" button in Settings panel
-   - Reconfigure your settings
-   - Refresh the page to verify persistence
-
-3. **Browser Extensions**
-   - Disable privacy extensions temporarily
-   - Some extensions block localStorage access
-
-### CORS Errors
-
-If using a remote data source, ensure it sends appropriate CORS headers:
-```
-Access-Control-Allow-Origin: *
-Access-Control-Allow-Methods: GET
-```
-
-For PiAware or tar1090 on same network, CORS should not be an issue.
-
-## Browser Compatibility
-
-**Fully Supported:**
-- Chrome/Edge 90+
-- Firefox 88+
-- Safari 14+
-
-**Minimum Requirements:**
-- ES6 JavaScript support
-- Canvas API
-- LocalStorage API
-- Fetch API
-
-## Technical Details
-
-### Architecture
-- Vanilla JavaScript (no frameworks)
-- HTML5 Canvas for rendering
-- CSS3 with Tailwind utility classes
-- LocalStorage for settings persistence
-
-### Data Format
-Compatible with tar1090/dump1090/PiAware JSON format:
-```json
-{
-  "aircraft": [{
-    "hex": "a12345",
-    "flight": "UAL123",
-    "lat": 12.345678,
-    "lon": -87.54321,
-    "alt_baro": 35000,
-    "gs": 450,
-    "track": 270,
-    "squawk": "1200"
-  }]
-}
-```
-
-### Performance Features
-- Object pooling for trail points
-- Offscreen canvas caching
-- Dirty region tracking
-- Debounced updates
-- Request pooling
-- Memory cleanup cycles
+| Problem | Action |
+| --- | --- |
+| Python or npm not found | Install the required tool. Open a new terminal. Use `--npm PATH` for an explicit npm location. |
+| Airspace generation fails | Check internet access and Python `pip` and `venv` support. Use `--skip-airspace` if airspace is not required. |
+| Dependency audit stops the build | Read the reported package and vulnerability. Correct the dependency issue before rebuilding. |
+| No aircraft | Open the receiver URL directly. Check receiver operation, home coordinates, range, and saved settings. |
+| Feed request blocked | Use the supplied local server. For web hosting, check the proxy, CORS, and HTTP/HTTPS settings. |
+| Map data missing | Run `python build.py --check`. Restore or regenerate the data, rebuild, and deploy the complete output folder. |
+| Port occupied | Start the server with `--port 8081`, then open the displayed address. |
+| Old settings remain | Change the values in System settings and save them. Browser settings override release defaults. |
 
 ## License
 
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-## Support
-
-- **Issues**: Report bugs via GitHub Issues
-- **Discussions**: Feature requests and questions via GitHub Discussions
-- **Documentation**: See CONFIG_EXAMPLE.md for detailed configuration
-
-## Changelog
-
-### v1.0.16 (Current Release)
-- Initial v1 release
-- 60+ scope themes and 35+ UI themes
-- Real-time aircraft tracking with trails and vectors
-- Airport and navaid display with runway layouts
-- Emergency detection with visual alerts
-- Comprehensive settings panel
-- Keyboard shortcuts
-- Desktop-optimized responsive design
-- Mobile support removed
-- Performance optimizations
-- LocalStorage settings persistence
-
----
-
-**Enjoy tracking aircraft!**
+See [LICENSE](LICENSE) for the GNU General Public License terms. Reference data
+retains the terms of its provider, including OurAirports and FAA source data.
